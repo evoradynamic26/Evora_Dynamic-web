@@ -457,20 +457,20 @@ body {
 
 .slider {
     width: 600px; /* Cambia al tamaño que quieras */
-    height: 400px;
+    height: 350px;
     overflow: hidden;
     margin: auto;
 }
 
 .slides {
     display: flex;
-    width: 300%;
+    width: 250%;
     animation: carrusel 15s infinite;
 }
 
 .slides img {
     width: 33.333%;
-    height: 400px;
+    height: 350px;
     object-fit: cover;
 }
 
