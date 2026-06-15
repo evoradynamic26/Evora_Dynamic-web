@@ -454,6 +454,44 @@ body {
 /* ============================================
    GALLERY SECTION
    ============================================ */
+
+.slider {
+    width: 800px; /* Cambia al tamaño que quieras */
+    height: 400px;
+    overflow: hidden;
+    margin: auto;
+}
+
+.slides {
+    display: flex;
+    width: 300%;
+    animation: carrusel 15s infinite;
+}
+
+.slides img {
+    width: 33.333%;
+    height: 400px;
+    object-fit: cover;
+}
+
+@keyframes carrusel {
+    0%, 30% {
+        transform: translateX(0);
+    }
+
+    33%, 63% {
+        transform: translateX(-33.333%);
+    }
+
+    66%, 96% {
+        transform: translateX(-66.666%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
 .gallery-section {
     padding: 5rem 0;
     background: rgba(17, 23, 35, 1);
