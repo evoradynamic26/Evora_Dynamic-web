@@ -66,19 +66,6 @@ body {
     backdrop-filter: blur(12px);
     border-bottom: 1px solid transparent;
     transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        gap: 8px;
-    }
-
-    .navbar a {
-        font-size: 12px;
-    }
 }
 
 .navbar.scrolled {
@@ -469,7 +456,7 @@ body {
    ============================================ */
 
 .slider {
-    width: 800px; /* Cambia al tamaño que quieras */
+    width: 600px; /* Cambia al tamaño que quieras */
     height: 400px;
     overflow: hidden;
     margin: auto;
