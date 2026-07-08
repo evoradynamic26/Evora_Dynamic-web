@@ -31,7 +31,7 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-light);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: hidden; /* Evita desbordamiento horizontal en móviles */
 }
 
 .container {
@@ -54,7 +54,7 @@ body {
 }
 
 /* ============================================
-   NAVBAR
+   NAVBAR (CORREGIDA Y CENTRADA)
    ============================================ */
 .navbar {
     position: fixed;
@@ -76,9 +76,10 @@ body {
 .navbar-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Logo a la izquierda, acciones a la derecha */
     height: 4rem;
     padding: 0 1rem;
+    position: relative;
 }
 
 .logo {
@@ -87,6 +88,7 @@ body {
     gap: 0.5rem;
     text-decoration: none;
     color: var(--text-white);
+    flex-shrink: 0; /* Evita que el logo se deforme */
 }
 
 .logo-text {
@@ -110,12 +112,21 @@ body {
     text-transform: uppercase;
 }
 
+/* CORRECCIÓN: Oculto en móvil, expandido y centrado en computadoras */
 .nav-links {
-    display: flex;
+    display: none;
     gap: 25px;
     align-items: center;
     justify-content: center;
-    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .nav-links {
+        display: flex;
+        flex: 1;                 /* Ocupa todo el espacio intermedio */
+        justify-content: center;  /* Centra horizontalmente los enlaces en ese espacio */
+        margin: 0 2rem;          /* Espaciado prudencial de seguridad */
+    }
 }
 
 .nav-link {
@@ -128,6 +139,7 @@ body {
     text-decoration: none;
     position: relative;
     transition: color 0.2s ease;
+    white-space: nowrap; /* Evita saltos de línea molestos en un mismo link */
 }
 
 .nav-link::after {
@@ -153,6 +165,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-shrink: 0; /* Mantiene la integridad de los botones de la derecha */
 }
 
 .btn-gaming {
@@ -290,6 +303,7 @@ body {
     position: relative;
     z-index: 10;
     text-align: center;
+    width: 100%;
     max-width: 48rem;
     margin: 0 auto;
     padding: 0 1rem;
@@ -309,7 +323,7 @@ body {
 .hero-title {
     font-family: 'Exo 2', sans-serif;
     font-weight: 900;
-    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-size: clamp(2rem, 6vw, 4.5rem); /* Flexible en móviles */
     color: var(--text-white);
     margin-bottom: 1.5rem;
     text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
@@ -321,6 +335,7 @@ body {
     font-size: 0.875rem;
     line-height: 1.6;
     margin-bottom: 2rem;
+    width: 100%;
     max-width: 26rem;
     margin-left: auto;
     margin-right: auto;
@@ -356,6 +371,7 @@ body {
 .section-header {
     text-align: center;
     margin-bottom: 3rem;
+    padding: 0 1rem;
 }
 
 .section-label {
@@ -371,7 +387,7 @@ body {
 .section-title {
     font-family: 'Exo 2', sans-serif;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
     text-transform: uppercase;
     color: var(--text-white);
     letter-spacing: 0.25em;
@@ -386,11 +402,18 @@ body {
 }
 
 .games-carousel {
-    position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Adaptabilidad móvil segura */
     gap: 1.5rem;
-    padding: 0 2rem;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+    .games-carousel {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        padding: 0 2rem;
+    }
 }
 
 .game-card {
@@ -400,11 +423,12 @@ body {
     gap: 1rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    width: 100%;
 }
 
 .game-circle {
-    width: clamp(120px, 18vw, 160px);
-    height: clamp(120px, 18vw, 160px);
+    width: clamp(100px, 25vw, 150px);
+    height: clamp(100px, 25vw, 150px);
     border-radius: 50%;
     border: 3px solid rgba(0, 212, 255, 0.6);
     overflow: hidden;
@@ -452,44 +476,36 @@ body {
 }
 
 /* ============================================
-   GALLERY SECTION
+   GALLERY SECTION (SLIDER CORREGIDO)
    ============================================ */
-
 .slider {
-    width: 600px; /* Cambia al tamaño que quieras */
-    height: 400px;
+    width: 100%;          /* Cambiado de 600px estáticos a un ancho fluido */
+    max-width: 600px;     /* No superará los 600px en monitores grandes */
+    height: auto;
+    aspect-ratio: 3 / 2;  /* Mantiene la proporción de aspecto sin deformarse */
     overflow: hidden;
-    margin: auto;
+    margin: 2rem auto;
+    border-radius: 8px;
 }
 
 .slides {
     display: flex;
     width: 300%;
+    height: 100%;
     animation: carrusel 15s infinite;
 }
 
 .slides img {
     width: 33.333%;
-    height: 400px;
+    height: 100%;
     object-fit: cover;
 }
 
 @keyframes carrusel {
-    0%, 30% {
-        transform: translateX(0);
-    }
-
-    33%, 63% {
-        transform: translateX(-33.333%);
-    }
-
-    66%, 96% {
-        transform: translateX(-66.666%);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
+    0%, 30% { transform: translateX(0); }
+    33%, 63% { transform: translateX(-33.333%); }
+    66%, 96% { transform: translateX(-66.666%); }
+    100% { transform: translateX(0); }
 }
 
 .gallery-section {
@@ -501,12 +517,14 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
-    grid-auto-rows: 200px;
+    grid-auto-rows: 140px;
+    padding: 0 1rem;
 }
 
 @media (min-width: 768px) {
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 200px;
     }
 }
 
@@ -557,7 +575,7 @@ body {
 .gallery-title {
     font-family: 'Exo 2', sans-serif;
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-white);
@@ -565,6 +583,12 @@ body {
     transition: all 0.3s ease;
     transform: translateY(8px);
     opacity: 0;
+}
+
+@media (min-width: 768px) {
+    .gallery-title {
+        font-size: 0.875rem;
+    }
 }
 
 .gallery-item:hover .gallery-title {
@@ -589,6 +613,7 @@ body {
     background: rgba(21, 27, 39, 1);
     margin-bottom: 2rem;
     transition: all 0.3s ease;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -604,20 +629,26 @@ body {
 
 .featured-content {
     flex: 1;
-    padding: 1.5rem 2rem;
+    padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .featured-content {
+        padding: 1.5rem 2rem;
+    }
 }
 
 .featured-image {
     width: 100%;
-    min-height: 240px;
+    height: 200px;
     object-fit: cover;
-    position: relative;
 }
 
 @media (min-width: 768px) {
     .featured-image {
         width: 320px;
-        min-height: auto;
+        height: auto;
+        min-height: 100%;
     }
 }
 
@@ -664,11 +695,17 @@ body {
 .post-title {
     font-family: 'Exo 2', sans-serif;
     font-weight: 900;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     text-transform: uppercase;
     color: var(--text-white);
     margin-bottom: 0.75rem;
     letter-spacing: 0.05em;
+}
+
+@media (min-width: 768px) {
+    .post-title {
+        font-size: 1.25rem;
+    }
 }
 
 .post-body {
@@ -697,8 +734,9 @@ body {
 
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Optimizado para evitar desbordes */
     gap: 1.5rem;
+    width: 100%;
 }
 
 .blog-card {
@@ -707,6 +745,7 @@ body {
     border-radius: 0.5rem;
     overflow: hidden;
     transition: all 0.3s ease;
+    width: 100%;
 }
 
 .blog-card:hover {
@@ -717,9 +756,14 @@ body {
 
 .blog-card-image {
     width: 100%;
-    height: 20rem;
+    height: 12rem;
     object-fit: cover;
-    position: relative;
+}
+
+@media (min-width: 480px) {
+    .blog-card-image {
+        height: 16rem;
+    }
 }
 
 .blog-card-content {
@@ -767,15 +811,17 @@ body {
 footer {
     background: rgba(8, 11, 16, 1);
     border-top: 1px solid rgba(0, 212, 255, 0.1);
+    padding: 0 1rem;
 }
 
 .footer-content {
     padding: 4rem 0;
+    width: 100%;
 }
 
 .footer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2.5rem;
     margin-bottom: 3rem;
 }
@@ -847,6 +893,7 @@ footer a:hover {
     line-height: 1.6;
     color: rgba(140, 160, 180, 1);
     margin-bottom: 1.5rem;
+    width: 100%;
     max-width: 20rem;
 }
 
