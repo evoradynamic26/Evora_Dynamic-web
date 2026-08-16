@@ -64,6 +64,7 @@ body {
     z-index: 50;
     background: rgba(14, 16, 37, 0.85);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid transparent;
     transition: all 0.3s ease;
 }
@@ -942,29 +943,21 @@ footer a:hover {
     color: rgba(110, 140, 160, 1);
 }
 
-.footer-socials {
-    display: flex;
-    gap: 0.75rem;
+.social-list {
+    list-style: none;
+    padding: 0;
 }
 
-.social-btn {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: transparent;
-    color: rgba(140, 160, 180, 1);
-    cursor: pointer;
-    display: flex;
+.social-link {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    gap: 8px; /* Espacio entre el icono y el texto */
+    text-decoration: none;
+    color: inherit;
 }
 
-.social-btn:hover {
-    border-color: var(--cyan-primary);
-    color: var(--cyan-primary);
-    background: rgba(0, 212, 255, 0.1);
+.social-link:hover {
+    opacity: 0.8; /* Efecto al pasar el cursor */
 }
 
 /* ============================================
