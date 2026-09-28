@@ -810,77 +810,58 @@ function initMiniGame() {
 }
 
 /* ==========================================================================
-   6. SISTEMA DE RESEÑAS Y FEEDBACK INTERACTIVO EN VIVO (CON EDICIÓN Y ELIMINACIÓN)
+   6. SISTEMA DE RESEÑAS Y FEEDBACK EN VIVO (MULTI-DISPOSITIVO EN LA NUBE)
    ========================================================================== */
 function initReviewsSystem() {
     const starsContainer = document.getElementById('interactiveStars');
     const reviewForm = document.getElementById('reviewForm');
     const reviewsList = document.getElementById('dynamicReviewsList');
     const selectedRatingInput = document.getElementById('selectedRating');
+    const syncBadge = document.getElementById('reviewsSyncBadge');
+    const syncText = document.getElementById('reviewsSyncText');
 
     if (!starsContainer || !reviewForm || !reviewsList) return;
 
+    // Endpoint en la nube para sincronizar todos los dispositivos (Expo-Tec 2026)
+    const CLOUD_SYNC_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a09d98f701a0ea26e33d38b9';
+
+    // Lista de IDs o autores de prueba a purgar (sin comentarios de prueba)
+    const TEST_IDS = ['rev-prof-carlos', 'rev-lucas-benitez', 'rev-mariana-gomez'];
+    function isTestReview(item) {
+        if (!item) return true;
+        if (TEST_IDS.includes(item.id)) return true;
+        const name = (item.name || '').toLowerCase();
+        if (name.includes('carlos mendoza') || name.includes('lucas benítez') || name.includes('mariana gómez')) {
+            return true;
+        }
+        return false;
+    }
+
     let currentRating = 5;
-
-    // Reseñas predeterminadas de la Expo-Tec 2026 para que se carguen en cualquier dispositivo
-    const DEFAULT_REVIEWS = [
-        {
-            id: 'rev-prof-carlos',
-            name: 'Prof. Carlos Mendoza',
-            role: 'Docente E.E.S.T N°3',
-            rating: 5,
-            comment: 'Excelente propuesta interdisciplinaria combinando ciberseguridad, programación y música rítmica. Gran trabajo del equipo para la Expo-Tec 2026.',
-            date: 'Expo-Tec, 2026'
-        },
-        {
-            id: 'rev-lucas-benitez',
-            name: 'Lucas Benítez',
-            role: 'Estudiante 7mo año',
-            rating: 5,
-            comment: 'La demo arcade en el navegador y los controles rítmicos quedaron geniales. La temática de esquivar malware al compás de la música es muy original y fluida.',
-            date: 'Expo-Tec, 2026'
-        },
-        {
-            id: 'rev-mariana-gomez',
-            name: 'Mariana Gómez',
-            role: 'Visitante Expo-Tec',
-            rating: 5,
-            comment: 'Me encantó la estética futurista y la música integrada. Se nota el compromiso y dedicación de todo el grupo en la presentación del stand.',
-            date: 'Expo-Tec, 2026'
-        }
-    ];
-
-    // Cargar y sincronizar reseñas guardadas en localStorage
     let savedReviews = [];
-    const rawReviews = localStorage.getItem('evora_reviews');
-    if (!rawReviews) {
-        savedReviews = [...DEFAULT_REVIEWS];
-        saveReviewsToStorage();
-    } else {
-        try {
-            const parsed = JSON.parse(rawReviews);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                savedReviews = parsed.map((item, idx) => ({
-                    id: item.id || `rev-${Date.now()}-${idx}`,
-                    name: item.name || 'Anónimo',
-                    role: item.role || 'Visitante',
-                    rating: Number(item.rating) || 5,
-                    comment: item.comment || '',
-                    date: item.date || 'Expo-Tec, 2026'
-                }));
-            } else {
-                savedReviews = [...DEFAULT_REVIEWS];
-                saveReviewsToStorage();
-            }
-        } catch (e) {
-            savedReviews = [...DEFAULT_REVIEWS];
-            saveReviewsToStorage();
-        }
+    let isSavingToCloud = false;
+
+    // Actualizar indicador visual de sincronización
+    function updateSyncStatus(status, text) {
+        if (!syncBadge || !syncText) return;
+        syncBadge.className = 'reviews-sync-badge ' + status;
+        syncText.textContent = text;
     }
 
-    function saveReviewsToStorage() {
-        localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+    // 1. Cargar reseñas desde localStorage y purgar comentarios de prueba anteriores
+    try {
+        const rawReviews = localStorage.getItem('evora_reviews');
+        if (rawReviews) {
+            const parsed = JSON.parse(rawReviews);
+            if (Array.isArray(parsed)) {
+                savedReviews = parsed.filter(item => !isTestReview(item));
+            }
+        }
+    } catch (e) {
+        savedReviews = [];
     }
+    // Guardar versión limpia en localStorage
+    localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
 
     function showReviewNotice(message) {
         const successNotice = document.getElementById('reviewSuccessNotice');
@@ -931,19 +912,11 @@ function initReviewsSystem() {
             const emptyState = document.createElement('div');
             emptyState.className = 'empty-reviews-state';
             emptyState.innerHTML = `
-                <p>No hay comentarios guardados en este dispositivo.</p>
-                <button type="button" class="btn-restore-reviews" id="btnRestoreReviews">🔄 Restaurar comentarios de muestra</button>
+                <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">💬</div>
+                <h4>¡Sé el primero en calificar!</h4>
+                <p>Todavía no hay comentarios publicados. Completá el formulario de arriba y tu mensaje aparecerá aquí en tiempo real para todos los dispositivos.</p>
             `;
             reviewsList.appendChild(emptyState);
-            const restoreBtn = emptyState.querySelector('#btnRestoreReviews');
-            if (restoreBtn) {
-                restoreBtn.addEventListener('click', () => {
-                    savedReviews = [...DEFAULT_REVIEWS];
-                    saveReviewsToStorage();
-                    renderAllReviews();
-                    showReviewNotice('✨ Comentarios de muestra restaurados.');
-                });
-            }
             return;
         }
 
@@ -1088,7 +1061,7 @@ function initReviewsSystem() {
             viewContainer.classList.remove('hidden');
         });
 
-        saveBtn.addEventListener('click', () => {
+        saveBtn.addEventListener('click', async () => {
             const newName = editContainer.querySelector('.edit-input-name').value.trim();
             const newRole = editContainer.querySelector('.edit-input-role').value.trim() || 'Visitante';
             const newComment = editContainer.querySelector('.edit-input-comment').value.trim();
@@ -1103,18 +1076,16 @@ function initReviewsSystem() {
             data.rating = editRating;
             data.comment = newComment;
 
-            saveReviewsToStorage();
-            renderAllReviews();
-            showReviewNotice('✨ Reseña actualizada exitosamente.');
+            await saveToCloudAndLocal(savedReviews);
+            showReviewNotice('✨ Reseña actualizada en todos los dispositivos.');
             if (window.playSfxScore) window.playSfxScore();
         });
 
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', async () => {
             if (confirm(`¿Estás seguro de que deseás eliminar el comentario de "${data.name}"?`)) {
-                savedReviews = savedReviews.filter(r => r.id !== data.id);
-                saveReviewsToStorage();
-                renderAllReviews();
-                showReviewNotice('🗑️ Comentario eliminado correctamente.');
+                const updatedList = savedReviews.filter(r => r.id !== data.id);
+                await saveToCloudAndLocal(updatedList);
+                showReviewNotice('🗑️ Comentario eliminado de todos los dispositivos.');
                 if (window.playSfxGameOver) window.playSfxGameOver();
             }
         });
@@ -1122,11 +1093,88 @@ function initReviewsSystem() {
         return card;
     }
 
-    // Inicializar renderizado de reseñas
+    // Guardar en la nube y en localStorage
+    async function saveToCloudAndLocal(newList) {
+        isSavingToCloud = true;
+        savedReviews = newList.filter(r => !isTestReview(r));
+        localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+        renderAllReviews();
+        updateSyncStatus('syncing', 'Sincronizando con todos los dispositivos...');
+
+        try {
+            const resp = await fetch(CLOUD_SYNC_ENDPOINT, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: 'Evora_Dynamic_ExpoTec_2026_Reviews',
+                    data: { reviews: savedReviews }
+                })
+            });
+
+            if (resp.ok) {
+                updateSyncStatus('online', '🟢 En vivo (Todos los dispositivos conectados)');
+            } else {
+                updateSyncStatus('offline', '🟠 Guardado localmente (Servidor ocupado)');
+            }
+        } catch (err) {
+            console.warn('Fallo en sincronización con la nube:', err);
+            updateSyncStatus('offline', '🟠 Guardado localmente (Modo sin conexión)');
+        } finally {
+            isSavingToCloud = false;
+        }
+    }
+
+    // Sincronizar desde la nube (descarga en tiempo real)
+    async function syncFromCloud(quiet = false) {
+        if (isSavingToCloud) return;
+        if (!quiet) updateSyncStatus('syncing', 'Conectando con todos los dispositivos...');
+
+        try {
+            const resp = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
+            if (resp.ok) {
+                const json = await resp.json();
+                const remoteReviews = (json.data && Array.isArray(json.data.reviews)) ? json.data.reviews : [];
+                const cleanRemote = remoteReviews.filter(r => !isTestReview(r));
+
+                // Verificar si hay cambios antes de re-renderizar
+                const currentStr = JSON.stringify(savedReviews);
+                const remoteStr = JSON.stringify(cleanRemote);
+
+                if (currentStr !== remoteStr) {
+                    savedReviews = cleanRemote;
+                    localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+                    // No interrumpir si el usuario está editando un comentario
+                    const isUserEditing = reviewsList.querySelector('.review-edit-mode:not(.hidden)');
+                    if (!isUserEditing) {
+                        renderAllReviews();
+                    }
+                }
+                updateSyncStatus('online', '🟢 En vivo (Todos los dispositivos conectados)');
+            } else {
+                updateSyncStatus('offline', '🟠 Modo sin conexión (Guardado localmente)');
+            }
+        } catch (err) {
+            updateSyncStatus('offline', '🟠 Modo sin conexión (Guardado localmente)');
+        }
+    }
+
+    // Inicializar renderizado local y conectar inmediatamente a la nube
     renderAllReviews();
+    syncFromCloud(false);
+
+    // Sincronización periódica cada 6 segundos para recibir comentarios de otros dispositivos
+    setInterval(() => {
+        syncFromCloud(true);
+    }, 6000);
+
+    // Sincronizar inmediatamente cuando el usuario vuelve a enfocar la pestaña
+    window.addEventListener('focus', () => syncFromCloud(true));
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) syncFromCloud(true);
+    });
 
     // Event listener para publicar una nueva reseña
-    reviewForm.addEventListener('submit', (e) => {
+    reviewForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const authorName = document.getElementById('reviewerName').value.trim();
         const authorRole = document.getElementById('reviewerRole').value.trim() || 'Visitante Expo-Tec';
@@ -1143,16 +1191,15 @@ function initReviewsSystem() {
             date: 'Expo-Tec, 2026'
         };
 
-        savedReviews.unshift(newReview);
-        saveReviewsToStorage();
-        renderAllReviews();
-
+        const updatedList = [newReview, ...savedReviews];
         reviewForm.reset();
         currentRating = 5;
         highlightStars(5);
 
+        await saveToCloudAndLocal(updatedList);
+
         if (window.playSfxScore) window.playSfxScore();
-        showReviewNotice('✨ ¡Muchas gracias por tu reseña! Ha sido añadida con éxito.');
+        showReviewNotice('✨ ¡Muchas gracias por tu reseña! Ha sido compartida en vivo con todos los dispositivos.');
     });
 }
 
