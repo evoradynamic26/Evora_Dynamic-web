@@ -1605,6 +1605,156 @@ footer a:hover {
 }
 
 /* ============================================
+   ACCIONES DE COMENTARIOS (EDITAR Y ELIMINAR)
+   ============================================ */
+.review-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.review-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.review-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.65rem;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.review-btn svg {
+    flex-shrink: 0;
+}
+
+.review-btn-edit {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.35);
+    color: var(--cyan-primary);
+}
+
+.review-btn-edit:hover, .review-btn-edit:focus {
+    background: rgba(0, 212, 255, 0.25);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.review-btn-delete {
+    background: rgba(255, 51, 102, 0.1);
+    border-color: rgba(255, 51, 102, 0.35);
+    color: #ff3366;
+}
+
+.review-btn-delete:hover, .review-btn-delete:focus {
+    background: rgba(255, 51, 102, 0.25);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+    transform: translateY(-1px);
+}
+
+.review-edit-box {
+    background: rgba(15, 21, 32, 0.95);
+    border: 1px solid var(--cyan-primary);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.18);
+    animation: fadeIn 0.25s ease;
+}
+
+.review-edit-box .form-group {
+    margin-bottom: 0.65rem;
+}
+
+.review-edit-box .form-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.2rem;
+}
+
+.review-edit-box .form-input {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.8rem;
+}
+
+.review-edit-box .form-textarea {
+    min-height: 70px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.8rem;
+}
+
+.review-edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-save-edit {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+}
+
+.btn-cancel-edit {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: var(--text-white);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel-edit:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.empty-reviews-state {
+    text-align: center;
+    padding: 2.2rem 1.5rem;
+    background: rgba(21, 27, 39, 0.7);
+    border: 1px dashed rgba(0, 212, 255, 0.35);
+    border-radius: 8px;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.btn-restore-reviews {
+    margin-top: 0.85rem;
+    padding: 0.5rem 1.1rem;
+    background: rgba(0, 212, 255, 0.12);
+    border: 1px solid var(--cyan-primary);
+    border-radius: 4px;
+    color: var(--cyan-primary);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-restore-reviews:hover {
+    background: var(--cyan-primary);
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+}
+
+/* ============================================
    CÓDIGO QR EXPO-TEC EN FOOTER
    ============================================ */
 .qr-container {

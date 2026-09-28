@@ -810,7 +810,7 @@ function initMiniGame() {
 }
 
 /* ==========================================================================
-   6. SISTEMA DE RESEÑAS Y FEEDBACK INTERACTIVO EN VIVO
+   6. SISTEMA DE RESEÑAS Y FEEDBACK INTERACTIVO EN VIVO (CON EDICIÓN Y ELIMINACIÓN)
    ========================================================================== */
 function initReviewsSystem() {
     const starsContainer = document.getElementById('interactiveStars');
@@ -822,7 +822,86 @@ function initReviewsSystem() {
 
     let currentRating = 5;
 
-    // Selector interactivo de estrellas
+    // Reseñas predeterminadas de la Expo-Tec 2026 para que se carguen en cualquier dispositivo
+    const DEFAULT_REVIEWS = [
+        {
+            id: 'rev-prof-carlos',
+            name: 'Prof. Carlos Mendoza',
+            role: 'Docente E.E.S.T N°3',
+            rating: 5,
+            comment: 'Excelente propuesta interdisciplinaria combinando ciberseguridad, programación y música rítmica. Gran trabajo del equipo para la Expo-Tec 2026.',
+            date: 'Expo-Tec, 2026'
+        },
+        {
+            id: 'rev-lucas-benitez',
+            name: 'Lucas Benítez',
+            role: 'Estudiante 7mo año',
+            rating: 5,
+            comment: 'La demo arcade en el navegador y los controles rítmicos quedaron geniales. La temática de esquivar malware al compás de la música es muy original y fluida.',
+            date: 'Expo-Tec, 2026'
+        },
+        {
+            id: 'rev-mariana-gomez',
+            name: 'Mariana Gómez',
+            role: 'Visitante Expo-Tec',
+            rating: 5,
+            comment: 'Me encantó la estética futurista y la música integrada. Se nota el compromiso y dedicación de todo el grupo en la presentación del stand.',
+            date: 'Expo-Tec, 2026'
+        }
+    ];
+
+    // Cargar y sincronizar reseñas guardadas en localStorage
+    let savedReviews = [];
+    const rawReviews = localStorage.getItem('evora_reviews');
+    if (!rawReviews) {
+        savedReviews = [...DEFAULT_REVIEWS];
+        saveReviewsToStorage();
+    } else {
+        try {
+            const parsed = JSON.parse(rawReviews);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                savedReviews = parsed.map((item, idx) => ({
+                    id: item.id || `rev-${Date.now()}-${idx}`,
+                    name: item.name || 'Anónimo',
+                    role: item.role || 'Visitante',
+                    rating: Number(item.rating) || 5,
+                    comment: item.comment || '',
+                    date: item.date || 'Expo-Tec, 2026'
+                }));
+            } else {
+                savedReviews = [...DEFAULT_REVIEWS];
+                saveReviewsToStorage();
+            }
+        } catch (e) {
+            savedReviews = [...DEFAULT_REVIEWS];
+            saveReviewsToStorage();
+        }
+    }
+
+    function saveReviewsToStorage() {
+        localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+    }
+
+    function showReviewNotice(message) {
+        const successNotice = document.getElementById('reviewSuccessNotice');
+        if (successNotice) {
+            successNotice.textContent = message;
+            successNotice.classList.add('visible');
+            setTimeout(() => successNotice.classList.remove('visible'), 4000);
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Selector interactivo de estrellas del formulario principal
     const starSvgs = starsContainer.querySelectorAll('.interactive-star');
     starSvgs.forEach((star, index) => {
         star.addEventListener('mouseenter', () => highlightStars(index + 1));
@@ -845,10 +924,208 @@ function initReviewsSystem() {
         });
     }
 
-    // Cargar reseñas guardadas en localStorage
-    const savedReviews = JSON.parse(localStorage.getItem('evora_reviews') || '[]');
-    savedReviews.forEach(r => appendReviewCard(r, false));
+    // Renderizar todas las reseñas en pantalla
+    function renderAllReviews() {
+        reviewsList.innerHTML = '';
+        if (savedReviews.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-reviews-state';
+            emptyState.innerHTML = `
+                <p>No hay comentarios guardados en este dispositivo.</p>
+                <button type="button" class="btn-restore-reviews" id="btnRestoreReviews">🔄 Restaurar comentarios de muestra</button>
+            `;
+            reviewsList.appendChild(emptyState);
+            const restoreBtn = emptyState.querySelector('#btnRestoreReviews');
+            if (restoreBtn) {
+                restoreBtn.addEventListener('click', () => {
+                    savedReviews = [...DEFAULT_REVIEWS];
+                    saveReviewsToStorage();
+                    renderAllReviews();
+                    showReviewNotice('✨ Comentarios de muestra restaurados.');
+                });
+            }
+            return;
+        }
 
+        savedReviews.forEach(review => {
+            const card = createReviewCardElement(review);
+            reviewsList.appendChild(card);
+        });
+    }
+
+    // Crear elemento de tarjeta con soporte para modo visualización y modo edición
+    function createReviewCardElement(data) {
+        const card = document.createElement('div');
+        card.className = 'blog-card new-review-card';
+        card.dataset.id = data.id;
+
+        function renderStars(rating) {
+            let starIcons = '';
+            for (let i = 0; i < 5; i++) {
+                const fill = i < rating ? 'var(--cyan-primary)' : 'rgba(255,255,255,0.15)';
+                starIcons += `<svg class="star" style="color: ${fill}" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>`;
+            }
+            return starIcons;
+        }
+
+        // Modo Visualización
+        const viewContainer = document.createElement('div');
+        viewContainer.className = 'blog-card-content review-view-mode';
+        viewContainer.style.padding = '1.5rem';
+        viewContainer.innerHTML = `
+            <div class="review-header-flex">
+                <div class="post-tags">
+                    <span class="tag-badge tag-new">${escapeHtml(data.role || 'Visitante')}</span>
+                    <span class="post-date">${escapeHtml(data.date || 'Expo-Tec, 2026')}</span>
+                </div>
+                <div class="review-card-actions">
+                    <button type="button" class="review-btn review-btn-edit" title="Editar este comentario">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        <span>Editar</span>
+                    </button>
+                    <button type="button" class="review-btn review-btn-delete" title="Eliminar este comentario">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="blog-card-header">
+                <h3 class="blog-card-title">${escapeHtml(data.name)}</h3>
+            </div>
+            <p class="blog-card-excerpt" style="margin-top: 0.5rem; font-style: italic;">
+                "${escapeHtml(data.comment)}"
+            </p>
+            <div class="blog-card-footer" style="margin-top: 1rem;">
+                <div class="star-rating">${renderStars(data.rating)}</div>
+            </div>
+        `;
+
+        // Modo Edición
+        const editContainer = document.createElement('div');
+        editContainer.className = 'blog-card-content review-edit-mode hidden';
+        editContainer.style.padding = '1.5rem';
+        editContainer.innerHTML = `
+            <div class="review-edit-box">
+                <div class="review-edit-header">
+                    <span class="review-edit-title">✏️ Modificar Reseña</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    <input type="text" class="form-input edit-input-name" value="${escapeHtml(data.name)}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rol / Escuela:</label>
+                    <input type="text" class="form-input edit-input-role" value="${escapeHtml(data.role || '')}" placeholder="Ej. Visitante">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Calificación:</label>
+                    <div class="interactive-stars edit-interactive-stars">
+                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Comentario:</label>
+                    <textarea class="form-textarea edit-input-comment" rows="3" required>${escapeHtml(data.comment)}</textarea>
+                </div>
+                <div class="review-edit-actions">
+                    <button type="button" class="btn-gaming-solid btn-save-edit">💾 GUARDAR CAMBIOS</button>
+                    <button type="button" class="btn-cancel-edit">✕ CANCELAR</button>
+                </div>
+            </div>
+        `;
+
+        card.appendChild(viewContainer);
+        card.appendChild(editContainer);
+
+        // Control de estrellas en modo edición
+        let editRating = data.rating || 5;
+        const editStars = editContainer.querySelectorAll('.edit-interactive-stars .interactive-star');
+        function updateEditStarsDisplay(val) {
+            editStars.forEach((s, idx) => {
+                if (idx < val) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+        }
+        updateEditStarsDisplay(editRating);
+
+        editStars.forEach((star, idx) => {
+            star.addEventListener('mouseenter', () => updateEditStarsDisplay(idx + 1));
+            star.addEventListener('click', () => {
+                editRating = idx + 1;
+                updateEditStarsDisplay(editRating);
+            });
+        });
+        const starsWrap = editContainer.querySelector('.edit-interactive-stars');
+        if (starsWrap) {
+            starsWrap.addEventListener('mouseleave', () => updateEditStarsDisplay(editRating));
+        }
+
+        // Acciones: Editar, Cancelar, Guardar y Eliminar
+        const editBtn = viewContainer.querySelector('.review-btn-edit');
+        const deleteBtn = viewContainer.querySelector('.review-btn-delete');
+        const cancelBtn = editContainer.querySelector('.btn-cancel-edit');
+        const saveBtn = editContainer.querySelector('.btn-save-edit');
+
+        editBtn.addEventListener('click', () => {
+            viewContainer.classList.add('hidden');
+            editContainer.classList.remove('hidden');
+            editRating = data.rating || 5;
+            updateEditStarsDisplay(editRating);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            editContainer.classList.add('hidden');
+            viewContainer.classList.remove('hidden');
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const newName = editContainer.querySelector('.edit-input-name').value.trim();
+            const newRole = editContainer.querySelector('.edit-input-role').value.trim() || 'Visitante';
+            const newComment = editContainer.querySelector('.edit-input-comment').value.trim();
+
+            if (!newName || !newComment) {
+                alert('Por favor completá tu nombre y el comentario.');
+                return;
+            }
+
+            data.name = newName;
+            data.role = newRole;
+            data.rating = editRating;
+            data.comment = newComment;
+
+            saveReviewsToStorage();
+            renderAllReviews();
+            showReviewNotice('✨ Reseña actualizada exitosamente.');
+            if (window.playSfxScore) window.playSfxScore();
+        });
+
+        deleteBtn.addEventListener('click', () => {
+            if (confirm(`¿Estás seguro de que deseás eliminar el comentario de "${data.name}"?`)) {
+                savedReviews = savedReviews.filter(r => r.id !== data.id);
+                saveReviewsToStorage();
+                renderAllReviews();
+                showReviewNotice('🗑️ Comentario eliminado correctamente.');
+                if (window.playSfxGameOver) window.playSfxGameOver();
+            }
+        });
+
+        return card;
+    }
+
+    // Inicializar renderizado de reseñas
+    renderAllReviews();
+
+    // Event listener para publicar una nueva reseña
     reviewForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const authorName = document.getElementById('reviewerName').value.trim();
@@ -858,6 +1135,7 @@ function initReviewsSystem() {
         if (!authorName || !reviewText) return;
 
         const newReview = {
+            id: 'rev-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
             name: authorName,
             role: authorRole,
             rating: currentRating,
@@ -866,62 +1144,16 @@ function initReviewsSystem() {
         };
 
         savedReviews.unshift(newReview);
-        localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+        saveReviewsToStorage();
+        renderAllReviews();
 
-        appendReviewCard(newReview, true);
         reviewForm.reset();
         currentRating = 5;
         highlightStars(5);
 
         if (window.playSfxScore) window.playSfxScore();
-
-        const successNotice = document.getElementById('reviewSuccessNotice');
-        if (successNotice) {
-            successNotice.classList.add('visible');
-            setTimeout(() => successNotice.classList.remove('visible'), 4000);
-        }
+        showReviewNotice('✨ ¡Muchas gracias por tu reseña! Ha sido añadida con éxito.');
     });
-
-    function appendReviewCard(data, prepend = false) {
-        const card = document.createElement('div');
-        card.className = 'blog-card new-review-card';
-
-        let starIcons = '';
-        for (let i = 0; i < 5; i++) {
-            const fill = i < data.rating ? 'var(--cyan-primary)' : 'rgba(255,255,255,0.15)';
-            starIcons += `<svg class="star" style="color: ${fill}" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>`;
-        }
-
-        card.innerHTML = `
-            <div class="blog-card-content" style="padding: 1.5rem;">
-                <div class="post-tags" style="margin-bottom: 0.5rem;">
-                    <span class="tag-badge tag-new">${escapeHtml(data.role)}</span>
-                    <span class="post-date">${data.date}</span>
-                </div>
-                <div class="blog-card-header">
-                    <h3 class="blog-card-title">${escapeHtml(data.name)}</h3>
-                </div>
-                <p class="blog-card-excerpt" style="margin-top: 0.5rem; font-style: italic;">
-                    "${escapeHtml(data.comment)}"
-                </p>
-                <div class="blog-card-footer" style="margin-top: 1rem;">
-                    <div class="star-rating">${starIcons}</div>
-                </div>
-            </div>
-        `;
-
-        if (prepend && reviewsList.firstChild) {
-            reviewsList.insertBefore(card, reviewsList.firstChild);
-        } else {
-            reviewsList.appendChild(card);
-        }
-    }
-
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
 }
 
 /* ==========================================================================
