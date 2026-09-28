@@ -841,6 +841,156 @@ function initReviewsSystem() {
     let savedReviews = [];
     let isSavingToCloud = false;
 
+    // Estado de sesión de Administrador (Usuario: Wi_Fi / Contraseña: Sin_Internet)
+    let isAdminLoggedIn = sessionStorage.getItem('evora_admin_logged') === 'true';
+    const adminControlsArea = document.getElementById('adminSessionControlArea');
+    const adminModal = document.getElementById('adminModal');
+    const closeAdminModal = document.getElementById('closeAdminModal');
+    const cancelAdminModalBtn = document.getElementById('cancelAdminModalBtn');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminUsernameInput = document.getElementById('adminUsernameInput');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
+    const adminUserError = document.getElementById('adminUserError');
+    const adminPasswordError = document.getElementById('adminPasswordError');
+
+    // Actualizar barra de sesión de Administrador
+    function updateAdminUI() {
+        if (!adminControlsArea) return;
+        if (isAdminLoggedIn) {
+            adminControlsArea.innerHTML = `
+                <div class="admin-session-bar">
+                    <div class="admin-session-info">
+                        <span class="admin-badge">🛡️ ADMIN: Wi_Fi</span>
+                        <span class="admin-session-desc">Modo administrador activo. Tenés permisos para editar y borrar comentarios.</span>
+                    </div>
+                    <button type="button" class="btn-admin-logout" id="btnAdminLogout" title="Cerrar sesión de administrador">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Cerrar Sesión Admin</span>
+                    </button>
+                </div>
+            `;
+            const logoutBtn = adminControlsArea.querySelector('#btnAdminLogout');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    isAdminLoggedIn = false;
+                    sessionStorage.removeItem('evora_admin_logged');
+                    updateAdminUI();
+                    renderAllReviews();
+                    showReviewNotice('🔒 Sesión de administrador cerrada. Modo visitante activado.');
+                });
+            }
+        } else {
+            adminControlsArea.innerHTML = '';
+        }
+    }
+
+    // Modal de login de Administrador
+    function openAdminModal() {
+        if (!adminModal) return;
+        adminModal.classList.add('active');
+        adminModal.setAttribute('aria-hidden', 'false');
+        if (adminUsernameInput) {
+            adminUsernameInput.value = '';
+            adminUsernameInput.classList.remove('input-error');
+        }
+        if (adminPasswordInput) {
+            adminPasswordInput.value = '';
+            adminPasswordInput.classList.remove('input-error');
+        }
+        if (adminUserError) adminUserError.textContent = '';
+        if (adminPasswordError) adminPasswordError.textContent = '';
+        setTimeout(() => {
+            if (adminUsernameInput) adminUsernameInput.focus();
+        }, 120);
+    }
+
+    function closeAdminModalFn() {
+        if (!adminModal) return;
+        adminModal.classList.remove('active');
+        adminModal.setAttribute('aria-hidden', 'true');
+        if (adminUserError) adminUserError.textContent = '';
+        if (adminPasswordError) adminPasswordError.textContent = '';
+    }
+
+    if (closeAdminModal) closeAdminModal.addEventListener('click', closeAdminModalFn);
+    if (cancelAdminModalBtn) cancelAdminModalBtn.addEventListener('click', closeAdminModalFn);
+    if (adminModal) {
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) closeAdminModalFn();
+        });
+    }
+
+    // Clic en los logos de la empresa para abrir acceso a Administrador
+    const companyLogos = document.querySelectorAll('#navCompanyLogo, .logo-icon-img, #companyLogoBlog, img[src*="LOGO EMPRESA"]');
+    companyLogos.forEach(logoEl => {
+        logoEl.style.cursor = 'pointer';
+        logoEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isAdminLoggedIn) {
+                if (adminControlsArea) {
+                    adminControlsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                showReviewNotice('🛡️ Ya estás autenticado como Administrador (Wi_Fi).');
+            } else {
+                openAdminModal();
+            }
+        });
+    });
+
+    // Validación de usuario y contraseña de Administrador
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userVal = adminUsernameInput ? adminUsernameInput.value.trim() : '';
+            const passVal = adminPasswordInput ? adminPasswordInput.value : '';
+
+            let hasError = false;
+
+            if (adminUserError) adminUserError.textContent = '';
+            if (adminPasswordError) adminPasswordError.textContent = '';
+            if (adminUsernameInput) adminUsernameInput.classList.remove('input-error');
+            if (adminPasswordInput) adminPasswordInput.classList.remove('input-error');
+
+            // Validación de usuario
+            if (userVal !== 'Wi_Fi') {
+                if (adminUserError) adminUserError.textContent = 'Usuario incorrecto';
+                if (adminUsernameInput) adminUsernameInput.classList.add('input-error');
+                hasError = true;
+            }
+
+            // Validación de contraseña
+            if (passVal !== 'Sin_Internet') {
+                if (adminPasswordError) adminPasswordError.textContent = 'Contraseña incorrecta';
+                if (adminPasswordInput) adminPasswordInput.classList.add('input-error');
+                hasError = true;
+            }
+
+            if (hasError) {
+                if (window.playSfxGameOver) window.playSfxGameOver();
+                return;
+            }
+
+            // Acceso concedido
+            isAdminLoggedIn = true;
+            sessionStorage.setItem('evora_admin_logged', 'true');
+            closeAdminModalFn();
+            updateAdminUI();
+            renderAllReviews();
+
+            if (window.playSfxScore) window.playSfxScore();
+            showReviewNotice('🛡️ ¡Bienvenido Wi_Fi! Permisos de moderación, edición y eliminación activados.');
+
+            if (adminControlsArea) {
+                adminControlsArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+
     // Actualizar indicador visual de sincronización
     function updateSyncStatus(status, text) {
         if (!syncBadge || !syncText) return;
@@ -926,7 +1076,7 @@ function initReviewsSystem() {
         });
     }
 
-    // Crear elemento de tarjeta con soporte para modo visualización y modo edición
+    // Crear elemento de tarjeta: los botones de editar y eliminar solo aparecen para el administrador
     function createReviewCardElement(data) {
         const card = document.createElement('div');
         card.className = 'blog-card new-review-card';
@@ -941,6 +1091,29 @@ function initReviewsSystem() {
             return starIcons;
         }
 
+        // Acciones de administración: Solo se agregan si el usuario inició sesión como Wi_Fi
+        let actionsHtml = '';
+        if (isAdminLoggedIn) {
+            actionsHtml = `
+                <div class="review-card-actions">
+                    <button type="button" class="review-btn review-btn-edit" title="Editar este comentario (Admin)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                        <span>Editar</span>
+                    </button>
+                    <button type="button" class="review-btn review-btn-delete" title="Eliminar este comentario (Admin)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            `;
+        }
+
         // Modo Visualización
         const viewContainer = document.createElement('div');
         viewContainer.className = 'blog-card-content review-view-mode';
@@ -951,22 +1124,7 @@ function initReviewsSystem() {
                     <span class="tag-badge tag-new">${escapeHtml(data.role || 'Visitante')}</span>
                     <span class="post-date">${escapeHtml(data.date || 'Expo-Tec, 2026')}</span>
                 </div>
-                <div class="review-card-actions">
-                    <button type="button" class="review-btn review-btn-edit" title="Editar este comentario">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                            <path d="M12 20h9"></path>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                        </svg>
-                        <span>Editar</span>
-                    </button>
-                    <button type="button" class="review-btn review-btn-delete" title="Eliminar este comentario">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        <span>Eliminar</span>
-                    </button>
-                </div>
+                ${actionsHtml}
             </div>
             <div class="blog-card-header">
                 <h3 class="blog-card-title">${escapeHtml(data.name)}</h3>
@@ -979,116 +1137,127 @@ function initReviewsSystem() {
             </div>
         `;
 
-        // Modo Edición
-        const editContainer = document.createElement('div');
-        editContainer.className = 'blog-card-content review-edit-mode hidden';
-        editContainer.style.padding = '1.5rem';
-        editContainer.innerHTML = `
-            <div class="review-edit-box">
-                <div class="review-edit-header">
-                    <span class="review-edit-title">✏️ Modificar Reseña</span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Nombre:</label>
-                    <input type="text" class="form-input edit-input-name" value="${escapeHtml(data.name)}" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Rol / Escuela:</label>
-                    <input type="text" class="form-input edit-input-role" value="${escapeHtml(data.role || '')}" placeholder="Ej. Visitante">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Calificación:</label>
-                    <div class="interactive-stars edit-interactive-stars">
-                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
-                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
-                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
-                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
-                        <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+        card.appendChild(viewContainer);
+
+        // Si es Administrador, se habilita el formulario de edición y eliminación
+        if (isAdminLoggedIn) {
+            const editContainer = document.createElement('div');
+            editContainer.className = 'blog-card-content review-edit-mode hidden';
+            editContainer.style.padding = '1.5rem';
+            editContainer.innerHTML = `
+                <div class="review-edit-box">
+                    <div class="review-edit-header">
+                        <span class="review-edit-title">✏️ Modificar Reseña (Modo Admin)</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre:</label>
+                        <input type="text" class="form-input edit-input-name" value="${escapeHtml(data.name)}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rol / Escuela:</label>
+                        <input type="text" class="form-input edit-input-role" value="${escapeHtml(data.role || '')}" placeholder="Ej. Visitante">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Calificación:</label>
+                        <div class="interactive-stars edit-interactive-stars">
+                            <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                            <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                            <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                            <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                            <svg class="interactive-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Comentario:</label>
+                        <textarea class="form-textarea edit-input-comment" rows="3" required>${escapeHtml(data.comment)}</textarea>
+                    </div>
+                    <div class="review-edit-actions">
+                        <button type="button" class="btn-gaming-solid btn-save-edit">💾 GUARDAR CAMBIOS</button>
+                        <button type="button" class="btn-cancel-edit">✕ CANCELAR</button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Comentario:</label>
-                    <textarea class="form-textarea edit-input-comment" rows="3" required>${escapeHtml(data.comment)}</textarea>
-                </div>
-                <div class="review-edit-actions">
-                    <button type="button" class="btn-gaming-solid btn-save-edit">💾 GUARDAR CAMBIOS</button>
-                    <button type="button" class="btn-cancel-edit">✕ CANCELAR</button>
-                </div>
-            </div>
-        `;
+            `;
 
-        card.appendChild(viewContainer);
-        card.appendChild(editContainer);
+            card.appendChild(editContainer);
 
-        // Control de estrellas en modo edición
-        let editRating = data.rating || 5;
-        const editStars = editContainer.querySelectorAll('.edit-interactive-stars .interactive-star');
-        function updateEditStarsDisplay(val) {
-            editStars.forEach((s, idx) => {
-                if (idx < val) s.classList.add('active');
-                else s.classList.remove('active');
-            });
-        }
-        updateEditStarsDisplay(editRating);
-
-        editStars.forEach((star, idx) => {
-            star.addEventListener('mouseenter', () => updateEditStarsDisplay(idx + 1));
-            star.addEventListener('click', () => {
-                editRating = idx + 1;
-                updateEditStarsDisplay(editRating);
-            });
-        });
-        const starsWrap = editContainer.querySelector('.edit-interactive-stars');
-        if (starsWrap) {
-            starsWrap.addEventListener('mouseleave', () => updateEditStarsDisplay(editRating));
-        }
-
-        // Acciones: Editar, Cancelar, Guardar y Eliminar
-        const editBtn = viewContainer.querySelector('.review-btn-edit');
-        const deleteBtn = viewContainer.querySelector('.review-btn-delete');
-        const cancelBtn = editContainer.querySelector('.btn-cancel-edit');
-        const saveBtn = editContainer.querySelector('.btn-save-edit');
-
-        editBtn.addEventListener('click', () => {
-            viewContainer.classList.add('hidden');
-            editContainer.classList.remove('hidden');
-            editRating = data.rating || 5;
+            // Control de estrellas en modo edición
+            let editRating = data.rating || 5;
+            const editStars = editContainer.querySelectorAll('.edit-interactive-stars .interactive-star');
+            function updateEditStarsDisplay(val) {
+                editStars.forEach((s, idx) => {
+                    if (idx < val) s.classList.add('active');
+                    else s.classList.remove('active');
+                });
+            }
             updateEditStarsDisplay(editRating);
-        });
 
-        cancelBtn.addEventListener('click', () => {
-            editContainer.classList.add('hidden');
-            viewContainer.classList.remove('hidden');
-        });
-
-        saveBtn.addEventListener('click', async () => {
-            const newName = editContainer.querySelector('.edit-input-name').value.trim();
-            const newRole = editContainer.querySelector('.edit-input-role').value.trim() || 'Visitante';
-            const newComment = editContainer.querySelector('.edit-input-comment').value.trim();
-
-            if (!newName || !newComment) {
-                alert('Por favor completá tu nombre y el comentario.');
-                return;
+            editStars.forEach((star, idx) => {
+                star.addEventListener('mouseenter', () => updateEditStarsDisplay(idx + 1));
+                star.addEventListener('click', () => {
+                    editRating = idx + 1;
+                    updateEditStarsDisplay(editRating);
+                });
+            });
+            const starsWrap = editContainer.querySelector('.edit-interactive-stars');
+            if (starsWrap) {
+                starsWrap.addEventListener('mouseleave', () => updateEditStarsDisplay(editRating));
             }
 
-            data.name = newName;
-            data.role = newRole;
-            data.rating = editRating;
-            data.comment = newComment;
+            // Acciones: Editar, Cancelar, Guardar y Eliminar
+            const editBtn = viewContainer.querySelector('.review-btn-edit');
+            const deleteBtn = viewContainer.querySelector('.review-btn-delete');
+            const cancelBtn = editContainer.querySelector('.btn-cancel-edit');
+            const saveBtn = editContainer.querySelector('.btn-save-edit');
 
-            await saveToCloudAndLocal(savedReviews);
-            showReviewNotice('✨ Reseña actualizada en todos los dispositivos.');
-            if (window.playSfxScore) window.playSfxScore();
-        });
-
-        deleteBtn.addEventListener('click', async () => {
-            if (confirm(`¿Estás seguro de que deseás eliminar el comentario de "${data.name}"?`)) {
-                const updatedList = savedReviews.filter(r => r.id !== data.id);
-                await saveToCloudAndLocal(updatedList);
-                showReviewNotice('🗑️ Comentario eliminado de todos los dispositivos.');
-                if (window.playSfxGameOver) window.playSfxGameOver();
+            if (editBtn) {
+                editBtn.addEventListener('click', () => {
+                    viewContainer.classList.add('hidden');
+                    editContainer.classList.remove('hidden');
+                    editRating = data.rating || 5;
+                    updateEditStarsDisplay(editRating);
+                });
             }
-        });
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    editContainer.classList.add('hidden');
+                    viewContainer.classList.remove('hidden');
+                });
+            }
+
+            if (saveBtn) {
+                saveBtn.addEventListener('click', async () => {
+                    const newName = editContainer.querySelector('.edit-input-name').value.trim();
+                    const newRole = editContainer.querySelector('.edit-input-role').value.trim() || 'Visitante';
+                    const newComment = editContainer.querySelector('.edit-input-comment').value.trim();
+
+                    if (!newName || !newComment) {
+                        alert('Por favor completá tu nombre y el comentario.');
+                        return;
+                    }
+
+                    data.name = newName;
+                    data.role = newRole;
+                    data.rating = editRating;
+                    data.comment = newComment;
+
+                    await saveToCloudAndLocal(savedReviews);
+                    showReviewNotice('✨ Reseña actualizada en todos los dispositivos.');
+                    if (window.playSfxScore) window.playSfxScore();
+                });
+            }
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', async () => {
+                    if (confirm(`¿Estás seguro de que deseás eliminar el comentario de "${data.name}"?`)) {
+                        const updatedList = savedReviews.filter(r => r.id !== data.id);
+                        await saveToCloudAndLocal(updatedList);
+                        showReviewNotice('🗑️ Comentario eliminado de todos los dispositivos.');
+                        if (window.playSfxGameOver) window.playSfxGameOver();
+                    }
+                });
+            }
+        }
 
         return card;
     }
@@ -1158,7 +1327,8 @@ function initReviewsSystem() {
         }
     }
 
-    // Inicializar renderizado local y conectar inmediatamente a la nube
+    // Inicializar interfaz de Administrador y renderizado local
+    updateAdminUI();
     renderAllReviews();
     syncFromCloud(false);
 
