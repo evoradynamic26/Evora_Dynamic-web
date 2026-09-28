@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="LOGO EMPRESA.png">
-    <title>Évora Dynamic</title>
-    <link rel="Stylesheet" href="Style.css">
+    <title>Évora Dynamic | Be On Beat - Expo-Tec 2026</title>
+    
+    <!-- Metadatos SEO y Open Graph para compartir -->
+    <meta name="description" content="Be On Beat - Videojuego rítmico educativo sobre ciberseguridad desarrollado por Évora Dynamic (E.E.S.T N°3 Hurlingham) para Expo-Tec 2026.">
+    <meta property="og:title" content="Évora Dynamic | Be On Beat - Expo-Tec 2026">
+    <meta property="og:description" content="Descubrí Be On Beat, un videojuego de ritmo y plataformas donde aprendés ciberseguridad esquivando malware, ransomware y ataques DDoS.">
+    <meta property="og:image" content="Logo - Be On Beat.png">
+
+    <link rel="stylesheet" href="Style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
 </head>
 <body>
     <!-- ============================================
@@ -18,65 +24,83 @@
     <nav class="navbar" id="navbar">
         <div class="navbar-content">
             <a href="#home" class="logo">
-    <img src="LOGO EMPRESA.png" alt="Icono" class="logo-icon-img" style="height: 50px; width: 50px;">
-    
-    <div class="logo-text">
-        <span class="logo-brand">ÉVORA DYNAMIC</span>
-        <span class="logo-subtitle">Proyecto</span>
-    </div>
-</a>
+                <img src="LOGO EMPRESA.png" alt="Logo Évora Dynamic" class="logo-icon-img" style="height: 48px; width: 48px;">
+                <div class="logo-text">
+                    <span class="logo-brand">ÉVORA DYNAMIC</span>
+                    <span class="logo-subtitle">Proyecto</span>
+                </div>
+            </a>
 
             <div class="nav-links">
                 <a href="#home" class="nav-link active">Inicio</a>
-                <a href="#gallery" class="nav-link">Imágenes</a>
                 <a href="#games" class="nav-link">Integrantes</a>
+                <a href="#threats" class="nav-link">Amenazas</a>
+                <a href="#arcade" class="nav-link">Demo Arcade</a>
+                <a href="#gallery" class="nav-link">Escenas</a>
                 <a href="#blog" class="nav-link">Reseñas</a>
-                <a href="#blog" class="mobile-menu-link">Info. General</a>
                 <a href="#contacts" class="nav-link">Contactos</a>
             </div>
-        </div>
 
-        <div class="mobile-menu" id="mobileMenu">
-            <div class="mobile-menu-content">
-                <a href="#home" class="mobile-menu-link">Inicio</a>
-                <a href="#gallery" class="mobile-menu-link">Imágenes</a>
-                <a href="#games" class="mobile-menu-link">Integrantes</a>
-                <a href="#blog" class="mobile-menu-link">Info. General</a>
-                <a href="#blog" class="mobile-menu-link">Reseñas</a>
-                <a href="#contacts" class="mobile-menu-link">Contactos</a>
-            </div>
-            <button class="btn-gaming" style="width: 100%; margin-top: 0.5rem;">DESCARGAR</button>
-        </div>
-    </nav>
-
-    <!-- ============================================
-         HERO SECTION
-         ============================================ -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <p class="hero-label">Bienvenidos a:</p>
-            <h1 class="hero-title">BE ON BEAT</h1>
-            <p class="hero-description">
-            Si quieres divertirte y pasar el rato con amigos, dale al botón de descargar y disfruta de este juego lleno de obstaculos y desafios!! 
-            </p>
             <div class="nav-actions">
-                <button class="btn-gaming">DESCARGAR</button>
-                <button class="menu-toggle" id="menuToggle" title="Menú">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <!-- Reproductor de Beat Rítmico (Web Audio API) -->
+                <button class="audio-btn" id="audioToggleBtn" title="Activar/Desactivar Música Synth">
+                    <span id="audioStatusText">Música: OFF</span>
+                    <div class="equalizer-bars" id="equalizerBars">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                </button>
+
+                <button class="btn-gaming btn-download-trigger">DESCARGAR</button>
+                <button class="menu-toggle" id="menuToggle" title="Menú" aria-label="Abrir Menú">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
             </div>
-                
         </div>
 
-    </section>
-
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <a href="#home" class="mobile-menu-link">Inicio</a>
+                <a href="#games" class="mobile-menu-link">Integrantes</a>
+                <a href="#threats" class="mobile-menu-link">Amenazas Cibernéticas</a>
+                <a href="#arcade" class="mobile-menu-link">Demo Jugable Arcade</a>
+                <a href="#gallery" class="mobile-menu-link">Escenas del Juego</a>
+                <a href="#blog" class="mobile-menu-link">Reseñas y Proyecto</a>
+                <a href="#contacts" class="mobile-menu-link">Contactos & QR</a>
+                <button class="audio-btn mobile-audio-toggle" id="mobileAudioToggleBtn" style="width: 100%; justify-content: center; margin-top: 0.75rem; padding: 0.65rem 1rem;">
+                    <span id="mobileAudioStatusText">🎵 Música Beat: OFF</span>
+                </button>
+                <button class="btn-gaming-solid btn-download-trigger" style="width: 100%; margin-top: 0.5rem;">DESCARGAR JUEGO</button>
+            </div>
+        </div>
+    </nav>
 
     <!-- ============================================
-         UPCOMING GAMES SECTION
+         HERO SECTION (CON CANVAS DE PARTÍCULAS)
+         ============================================ -->
+    <section class="hero" id="home">
+        <canvas id="heroCanvas"></canvas>
+        <div class="hero-content">
+            <p class="hero-label">Bienvenidos a:</p>
+            <h1 class="hero-title">BE ON BEAT</h1>
+            <p class="hero-description">
+                Superá obstáculos al compás de la música y aprendé ciberseguridad sorteando virus, malware y ataques cibernéticos en un mundo arcade dinámico.
+            </p>
+            <div class="hero-actions">
+                <a href="#arcade" class="btn-gaming-solid">PROBAR DEMO ARCADE</a>
+                <button class="btn-gaming-outline btn-download-trigger">DESCARGAR JUEGO</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         INTEGRANTES SECTION
          ============================================ -->
     <section class="games-section" id="games">
         <div class="container">
@@ -89,50 +113,131 @@
             <div class="games-carousel">
                 <div class="game-card">
                     <div class="game-circle">
-                        <img src="Emiliano.jpeg" alt="Emiliano">
+                        <img src="Emiliano.jpeg" alt="Emiliano Prieto">
                     </div>
                     <div class="game-info">
                         <div class="game-title">EMILIANO PRIETO</div>
-                        <div class="game-date">Lider - Programador</div>
+                        <div class="game-date">Líder - Programador</div>
                     </div>
                 </div>
 
                 <div class="game-card">
                     <div class="game-circle">
-                        <img src="zoe.jpeg" alt="Zoe">
+                        <img src="zoe.jpeg" alt="Zoe Esteves">
                     </div>
                     <div class="game-info">
                         <div class="game-title">ZOE ESTEVES</div>
-                        <div class="game-date">Lider - Programadora</div>
+                        <div class="game-date">Líder - Programadora</div>
                     </div>
                 </div>
 
                 <div class="game-card">
                     <div class="game-circle">
-                        <img src="Vicky.jpeg" alt="Vicky">
+                        <img src="Vicky.jpeg" alt="Vicky Candrak">
                     </div>
                     <div class="game-info">
                         <div class="game-title">VICKY CANDRAK</div>
-                        <div class="game-date">Diseñadora Grafica</div>
+                        <div class="game-date">Diseñadora Gráfica</div>
                     </div>
                 </div>
 
                 <div class="game-card">
                     <div class="game-circle">
-                        <img src="Milena.jpeg" alt="Milena">
+                        <img src="Milena.jpeg" alt="Milena Rivero">
                     </div>
                     <div class="game-info">
                         <div class="game-title">MILENA RIVERO</div>
-                        <div class="game-date">Diseñadora Grafica</div>
+                        <div class="game-date">Diseñadora Gráfica</div>
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
     <!-- ============================================
-         GALLERY SECTION
+         AMENAZAS CIBERNÉTICAS (CIBERSEGURIDAD)
+         ============================================ -->
+    <section class="threats-section" id="threats">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-label">Aprende Jugando</p>
+                <h2 class="section-title">Amenazas & Mecánicas</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="threats-grid">
+                <div class="threat-card malware">
+                    <div class="threat-icon-box">👾</div>
+                    <h3 class="threat-title">Malware & Troyanos</h3>
+                    <p class="threat-desc">
+                        Virus encubiertos en plataformas que intentan infectar al personaje y alterar temporalmente la precisión del salto. ¡Mantené el compás para evitarlos!
+                    </p>
+                </div>
+
+                <div class="threat-card ransom">
+                    <div class="threat-icon-box">🔒</div>
+                    <h3 class="threat-title">Ransomware</h3>
+                    <p class="threat-desc">
+                        Cifra el acceso a las siguientes zonas del nivel. Deberás esquivar los candados y encontrar la clave criptográfica para desbloquear la salida.
+                    </p>
+                </div>
+
+                <div class="threat-card ddos">
+                    <div class="threat-icon-box">⚡</div>
+                    <h3 class="threat-title">Ataques DDoS</h3>
+                    <p class="threat-desc">
+                        Una lluvia intensa de paquetes y proyectiles rítmicos que saturan la pista de baile. Requiere reflejos veloces y saltos milimétricos al ritmo del bombo.
+                    </p>
+                </div>
+
+                <div class="threat-card firewall">
+                    <div class="threat-icon-box">🛡️</div>
+                    <h3 class="threat-title">Firewall & Parches</h3>
+                    <p class="threat-desc">
+                        Power-ups coleccionables durante la partida que otorgan escudos protectores, neutralizan amenazas inmediatas y aceleran el ritmo musical.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         MINIJUEGO DEMO ARCADE EN EL NAVEGADOR
+         ============================================ -->
+    <section class="arcade-section" id="arcade">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-label">Experiencia Interactiva</p>
+                <h2 class="section-title">Demo Jugable Arcade</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="arcade-card">
+                <div class="arcade-hud">
+                    <div>PUNTUACIÓN: <span class="arcade-score-val" id="arcadeScore">0</span></div>
+                    <div>RÉCORD: <span class="arcade-score-val" id="arcadeHighScore">0</span></div>
+                </div>
+
+                <div class="arcade-canvas-wrap">
+                    <canvas id="arcadeCanvas" width="640" height="240"></canvas>
+                </div>
+
+                <div class="arcade-status" id="arcadeStatus">
+                    Presioná "INICIAR DEMO" y saltá con la barra espaciadora o clic al ritmo.
+                </div>
+
+                <div class="arcade-controls-hint">
+                    <button class="btn-gaming-solid" id="arcadeStartBtn">INICIAR DEMO</button>
+                    <div>
+                        Control: <span class="key-badge">ESPACIO</span> o <span class="key-badge">CLIC / TOQUE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         GALLERY SECTION (ESCENAS CON CONTROLES)
          ============================================ -->
     <section class="gallery-section" id="gallery">
         <div class="container">
@@ -142,31 +247,37 @@
                 <div class="section-divider"></div>
             </div>
     
-    <div class="slider">
-    <div class="slides">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/game-3-forza-DLq77SA7RTsXVzuGeWvbDe.webp" alt="Imagen 1">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/game-1-fifal-4pYrfbudWQqsXYP3TQs9eG.webp" alt="Imagen 2">
-        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/hero-gaming-bg-jr9NrYssYtFWR7VLtwVqLR.webp" alt="Imagen 3">
-    </div>
+            <div class="slider-wrapper">
+                <button class="slider-btn prev" id="sliderPrev" aria-label="Escena anterior">&#10094;</button>
+                <div class="slider">
+                    <div class="slides">
+                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/game-3-forza-DLq77SA7RTsXVzuGeWvbDe.webp" alt="Escena de juego 1">
+                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/game-1-fifal-4pYrfbudWQqsXYP3TQs9eG.webp" alt="Escena de juego 2">
+                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663700891269/dmwCE3kLKHM7hMLUo2SNt4/hero-gaming-bg-jr9NrYssYtFWR7VLtwVqLR.webp" alt="Escena de juego 3">
+                    </div>
+                </div>
+                <button class="slider-btn next" id="sliderNext" aria-label="Siguiente escena">&#10095;</button>
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
+        </div>
     </section>
-</div>
 
     <!-- ============================================
-         BLOG SECTION
+         BLOG & RESEÑAS INTERACTIVAS EN VIVO
          ============================================ -->
     <section class="blog-section" id="blog">
         <div class="container">
             <div class="section-header">
-                <p class="section-label">Reseñas</p>
+                <p class="section-label">Reseñas y Feedback</p>
                 <h2 class="section-title">Colegio y Proyectos</h2>
                 <div class="section-divider"></div>
             </div>
 
-            <!-- Featured Post -->
+            <!-- Reseña Destacada de la Escuela -->
             <div class="featured-post">
                 <div class="featured-content">
                     <div class="post-tags">
-                        <span class="tag-badge tag-new">Victor</span>
+                        <span class="tag-badge tag-new">Víctor</span>
                         <span class="tag-badge tag-games">Mercante</span>
                         <span class="tag-badge tag-action">Hurlingham</span>
                         <span class="post-date">Expo-Tec, 2026</span>
@@ -174,11 +285,12 @@
                     <h3 class="post-title">E.E.S.T N°3</h3>
                     
                     <p class="post-body">
-                        En nuestro colegio sentimos que aprender no es solo estudiar para aprobar, sino crecer como personas todos los días. La institución crea un ambiente cálido y cercano, con espacios y actividades que acompañan tanto lo académico como lo humano. Los profes están siempre acompañando, explicando con paciencia y animándonos a dar lo mejor de nosotros, incluso cuando algo cuesta. Se nota que les importa lo que hacen y que quieren que cada alumno encuentre lo que le gusta y confíe en sí mismo.
+                        En nuestro colegio sentimos que aprender no es solo estudiar para aprobar, sino crecer como personas todos los días. La institución crea un ambiente cálido y cercano, con espacios y actividades que acompañan tanto lo académico como lo humano. Los profesores están siempre presentes, explicando con paciencia y animándonos a dar lo mejor de nosotros, incluso ante los mayores desafíos técnicos.
                     </p>
 
                     <div class="post-footer">
-                        <div class="star-rating">
+                        <div class="star-rating" title="5 de 5 estrellas">
+                            <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                             <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                             <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                             <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
@@ -186,27 +298,27 @@
                         </div>
                     </div>
                 </div>
-                <img src="LOGO ESCUELA.jpeg" alt="FIFAL 2018" class="featured-image">
+                <img src="LOGO ESCUELA.jpeg" alt="Escudo de la Escuela E.E.S.T N°3" class="featured-image">
             </div>
 
-            <!-- Blog Grid -->
+            <!-- Blog Grid Inicial -->
             <div class="blog-grid">
                 <div class="blog-card">
-                    <img src="Logo - Be On Beat.png" alt="FORZA JACSON" class="blog-card-image">
+                    <img src="Logo - Be On Beat.png" alt="Logo de Be On Beat" class="blog-card-image">
                     <div class="blog-card-content">
                         <div class="post-tags" style="margin-bottom: 0.75rem;">
-                            <span class="tag-badge tag-games">Proyect</span>
-                            <span class="tag-badge tag-action">VideoJuego</span>
+                            <span class="tag-badge tag-games">Proyecto</span>
+                            <span class="tag-badge tag-action">Videojuego</span>
                         </div>
                         <div class="blog-card-header">
-                            <h3 class="blog-card-title">BROS ON BEAT</h3>
+                            <h3 class="blog-card-title">BE ON BEAT</h3>
                             <span class="blog-card-date">Expo-Tec, 2026</span>
                         </div>
                         <p class="blog-card-excerpt">
-                            Este videojuego esta inspirado en Geometry Dash y Mario Bros. En donde varios animales deben pasar por varios virus/ataques ciberneticos como malware, ramsonware, ddos y exploits ocultos en los obstaculos a medida que van pasando los niveles.
+                            Inspirado en Geometry Dash y Mario Bros. En él, varios personajes deben superar ataques cibernéticos y amenazas como malware, ransomware, DDoS y exploits ocultos en los obstáculos a medida que avanzan por los niveles.
                         </p>
                         <div class="blog-card-footer">
-                            <div class="star-rating">
+                            <div class="star-rating" title="5 de 5 estrellas">
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
@@ -218,24 +330,25 @@
                 </div>
 
                 <div class="blog-card">
-                    <img src="LOGO EMPRESA.png" alt="NO MAN'S SKY" class="blog-card-image">
+                    <img src="LOGO EMPRESA.png" alt="Logo de Évora Dynamic" class="blog-card-image">
                     <div class="blog-card-content">
                         <div class="post-tags" style="margin-bottom: 0.75rem;">
-                            <span class="tag-badge tag-action">Nombre</span>
                             <span class="tag-badge tag-action">Empresa</span>
+                            <span class="tag-badge tag-games">Desarrollo</span>
                         </div>
                         <div class="blog-card-header">
                             <h3 class="blog-card-title">ÉVORA DYNAMIC</h3>
                             <span class="blog-card-date">Expo-Tec, 2026</span>
                         </div>
                         <p class="blog-card-excerpt">
-                            Esta empresa fue fundada para crear videojuegos y proyectos relacionados con la tecnologia, cumple el objetivo de desarrollar juegos innovadores y educativos que inspiren a las nuevas generaciones a explorar el mundo de la tecnología y la programación.
+                            Fundada para crear videojuegos y proyectos tecnológicos con impacto. Nuestro objetivo es desarrollar propuestas dinámicas e interactivas que inspiren y motiven a los jóvenes a explorar el fascinante mundo del desarrollo y la programación.
                         </p>
                         <p class="blog-card-excerpt">
-                            Si queres saber mas sobre nosotros, haz click en el siguiente link: <a href="pag web rial.png" target="_blank">Évora Dynamic Empresa</a>
+                            Si querés conocer más detalles de nuestro proyecto, podés ver: <a href="pag web rial.png" target="_blank" style="color: var(--cyan-primary); text-decoration: underline;">Maqueta Évora Dynamic</a>
                         </p>
                         <div class="blog-card-footer">
-                            <div class="star-rating">
+                            <div class="star-rating" title="5 de 5 estrellas">
+                                <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
                                 <svg class="star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
@@ -245,11 +358,72 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Sistema de Reseñas Interactivas Expo-Tec -->
+            <div class="reviews-container" style="margin-top: 3.5rem;">
+                <div class="review-form-card">
+                    <h3 class="review-form-title">Dejanos tu Opinión</h3>
+                    <p class="review-form-desc">
+                        ¿Visitaste nuestro stand en la Expo-Tec 2026? Calificá nuestro proyecto y dejá tu comentario en vivo:
+                    </p>
+                    <form id="reviewForm">
+                        <div class="form-group">
+                            <label class="form-label" for="reviewerName">Tu Nombre:</label>
+                            <input type="text" class="form-input" id="reviewerName" placeholder="Ej. Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reviewerRole">Rol / Escuela:</label>
+                            <input type="text" class="form-input" id="reviewerRole" placeholder="Ej. Estudiante E.E.S.T N°3 / Visitante">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Calificación:</label>
+                            <div class="interactive-stars" id="interactiveStars">
+                                <svg class="interactive-star active" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                                <svg class="interactive-star active" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                                <svg class="interactive-star active" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                                <svg class="interactive-star active" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                                <svg class="interactive-star active" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.70 20.27 25 12 19.54 3.73 25 6.82 16.70 0 10.27 8.91 10.26 12 2"></polygon></svg>
+                            </div>
+                            <input type="hidden" id="selectedRating" value="5">
+                        </div>
+
+                        <!-- Alerta antes de escribir el comentario -->
+                        <div class="comment-warning-banner">
+                            <div class="warning-banner-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div class="warning-banner-body">
+                                <span class="warning-banner-title">⚠️ AVISO PARA VISITANTES:</span>
+                                <p class="warning-banner-desc">
+                                    Por favor medí tus palabras y mantené el respeto. Una vez publicado, tu comentario quedará registrado de forma permanente y <strong>no podrá ser borrado ni editado</strong>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="reviewerComment">Tu Comentario:</label>
+                            <textarea class="form-textarea" id="reviewerComment" rows="3" placeholder="Escribí tu reseña con respeto (no se podrá borrar una vez enviada)..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-gaming-solid" style="width: 100%;">PUBLICAR RESEÑA</button>
+                        <div class="success-notice" id="reviewSuccessNotice">
+                            ✨ ¡Muchas gracias por tu reseña! Ha sido añadida con éxito.
+                        </div>
+                    </form>
+                </div>
+
+                <div id="dynamicReviewsList" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Las reseñas agregadas dinámicamente se insertarán aquí -->
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- ============================================
-         FOOTER
+         FOOTER & CÓDIGO QR EXPO-TEC
          ============================================ -->
     <footer id="contacts">
         <div class="container">
@@ -268,7 +442,7 @@
                             </div>
                         </div>
                         <p class="footer-description">
-                            Si tenes alguna consulta, sugerencia o simplemente querés saludar, no dudes en contactarnos através de los siguientes medios de comunicación:
+                            Si tenés alguna consulta, sugerencia o querés conocer más de nuestros proyectos, podés escribirnos:
                         </p>
                         <div class="footer-contact">
                             <div class="contact-item">
@@ -281,112 +455,159 @@
                         </div>
                     </div>
 
-<!-- Quick Links / Redes -->
-            <div class="footer-social-links">
-                <h4>REDES:</h4>
-                <ul class="social-list">
-                    <li>
-                        <a href="https://www.youtube.com/@%C3%89voraDynamic" target="_blank" class="social-link">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.54c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z"></path>
-                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
-                            </svg>
-                            <span>YouTube</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com/evora_dynamic/?hl=es" target="_blank" class="social-link">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7.75 2C4.57 2 2 4.57 2 7.75v8.5C2 19.43 4.57 22 7.75 22h8.5C19.43 22 22 19.43 22 16.25v-8.5C22 4.57 19.43 2 16.25 2h-8.5zm0 2h8.5A3.75 3.75 0 0120 7.75v8.5A3.75 3.75 0 0116.25 20h-8.5A3.75 3.75 0 014 16.25v-8.5A3.75 3.75 0 017.75 4zm8.75 1a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z"/>
-                            </svg>
-                            <span>Instagram</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://discord.gg/wqNmSYZfmj" target="_blank" class="social-link">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.328-.403.769-.552 1.116a18.27 18.27 0 00-5.333 0A11.724 11.724 0 009.448 3a19.736 19.736 0 00-4.433 1.369C2.218 8.555 1.46 12.638 1.84 16.664A19.9 19.9 0 007.239 19c.438-.6.828-1.233 1.164-1.896-.639-.242-1.249-.54-1.825-.888.153-.112.302-.23.447-.351 3.52 1.65 7.342 1.65 10.82 0 .146.121.295.239.448.351-.577.349-1.189.647-1.829.889.336.662.726 1.295 1.164 1.895a19.87 19.87 0 005.402-2.337c.446-4.667-.762-8.713-3.713-12.294zM8.02 14.247c-1.057 0-1.924-.968-1.924-2.159 0-1.191.848-2.159 1.924-2.159 1.085 0 1.943.978 1.924 2.159 0 1.191-.848 2.159-1.924 2.159zm7.96 0c-1.057 0-1.924-.968-1.924-2.159 0-1.191.848-2.159 1.924-2.159 1.085 0 1.943.978 1.924 2.159 0 1.191-.839 2.159-1.924 2.159z"/>
-                            </svg>
-                            <span>Discord</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/evoradynamic26" target="_blank" class="social-link">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a10.98 10.98 0 015.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.76.11 3.05.73.8 1.18 1.83 1.18 3.09 0 4.42-2.68 5.39-5.24 5.68.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
-                            </svg>
-                            <span>GitHub</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    <!-- Redes Sociales -->
+                    <div class="footer-social-links">
+                        <h4>REDES OFICIALES:</h4>
+                        <ul class="social-list">
+                            <li>
+                                <a href="https://www.youtube.com/@%C3%89voraDynamic" target="_blank" class="social-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.54c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z"></path>
+                                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                                    </svg>
+                                    <span>YouTube</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.instagram.com/evora_dynamic/?hl=es" target="_blank" class="social-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M7.75 2C4.57 2 2 4.57 2 7.75v8.5C2 19.43 4.57 22 7.75 22h8.5C19.43 22 22 19.43 22 16.25v-8.5C22 4.57 19.43 2 16.25 2h-8.5zm0 2h8.5A3.75 3.75 0 0120 7.75v8.5A3.75 3.75 0 0116.25 20h-8.5A3.75 3.75 0 014 16.25v-8.5A3.75 3.75 0 017.75 4zm8.75 1a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z"/>
+                                    </svg>
+                                    <span>Instagram</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://discord.gg/wqNmSYZfmj" target="_blank" class="social-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.328-.403.769-.552 1.116a18.27 18.27 0 00-5.333 0A11.724 11.724 0 009.448 3a19.736 19.736 0 00-4.433 1.369C2.218 8.555 1.46 12.638 1.84 16.664A19.9 19.9 0 007.239 19c.438-.6.828-1.233 1.164-1.896-.639-.242-1.249-.54-1.825-.888.153-.112.302-.23.447-.351 3.52 1.65 7.342 1.65 10.82 0 .146.121.295.239.448.351-.577.349-1.189.647-1.829.889.336.662.726 1.295 1.164 1.895a19.87 19.87 0 005.402-2.337c.446-4.667-.762-8.713-3.713-12.294zM8.02 14.247c-1.057 0-1.924-.968-1.924-2.159 0-1.191.848-2.159 1.924-2.159 1.085 0 1.943.978 1.924 2.159 0 1.191-.848 2.159-1.924 2.159zm7.96 0c-1.057 0-1.924-.968-1.924-2.159 0-1.191.848-2.159 1.924-2.159 1.085 0 1.943.978 1.924 2.159 0 1.191-.839 2.159-1.924 2.159z"/>
+                                    </svg>
+                                    <span>Discord</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/evoradynamic26" target="_blank" class="social-link">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a10.98 10.98 0 015.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.76.11 3.05.73.8 1.18 1.83 1.18 3.09 0 4.42-2.68 5.39-5.24 5.68.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                                    </svg>
+                                    <span>GitHub</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
-            <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <p class="footer-copyright">© 2026 Évora Dynamic.</p>
+                    <!-- Código QR Interactivo para la Expo-Tec -->
+                    <div class="qr-container">
+                        <h4>📱 ESCANEÁ EN EL STAND</h4>
+                        <div class="qr-box">
+                            <!-- SVG QR Code Vectorial -->
+                            <svg width="110" height="110" viewBox="0 0 29 29" shape-rendering="crispEdges">
+                                <rect width="29" height="29" fill="#ffffff"/>
+                                <!-- Patrón de esquinas (Finders) -->
+                                <rect x="2" y="2" width="7" height="7" fill="#090d12"/>
+                                <rect x="3" y="3" width="5" height="5" fill="#ffffff"/>
+                                <rect x="4" y="4" width="3" height="3" fill="#090d12"/>
+                                
+                                <rect x="20" y="2" width="7" height="7" fill="#090d12"/>
+                                <rect x="21" y="3" width="5" height="5" fill="#ffffff"/>
+                                <rect x="22" y="4" width="3" height="3" fill="#090d12"/>
+
+                                <rect x="2" y="20" width="7" height="7" fill="#090d12"/>
+                                <rect x="3" y="21" width="5" height="5" fill="#ffffff"/>
+                                <rect x="4" y="22" width="3" height="3" fill="#090d12"/>
+
+                                <!-- Módulos de datos -->
+                                <rect x="11" y="2" width="1" height="1" fill="#090d12"/>
+                                <rect x="13" y="2" width="2" height="1" fill="#090d12"/>
+                                <rect x="17" y="2" width="1" height="1" fill="#090d12"/>
+                                <rect x="10" y="4" width="2" height="1" fill="#090d12"/>
+                                <rect x="14" y="4" width="1" height="1" fill="#090d12"/>
+                                <rect x="16" y="4" width="2" height="1" fill="#090d12"/>
+                                <rect x="11" y="6" width="3" height="1" fill="#090d12"/>
+                                <rect x="16" y="6" width="1" height="1" fill="#090d12"/>
+
+                                <rect x="2" y="10" width="2" height="1" fill="#090d12"/>
+                                <rect x="6" y="10" width="1" height="1" fill="#090d12"/>
+                                <rect x="10" y="10" width="3" height="2" fill="#090d12"/>
+                                <rect x="15" y="10" width="2" height="1" fill="#090d12"/>
+                                <rect x="19" y="10" width="3" height="1" fill="#090d12"/>
+                                <rect x="24" y="10" width="2" height="1" fill="#090d12"/>
+
+                                <rect x="3" y="12" width="1" height="2" fill="#090d12"/>
+                                <rect x="6" y="12" width="2" height="1" fill="#090d12"/>
+                                <rect x="14" y="12" width="3" height="1" fill="#090d12"/>
+                                <rect x="20" y="12" width="2" height="2" fill="#090d12"/>
+                                <rect x="25" y="12" width="1" height="1" fill="#090d12"/>
+
+                                <rect x="2" y="15" width="3" height="1" fill="#090d12"/>
+                                <rect x="7" y="15" width="2" height="2" fill="#090d12"/>
+                                <rect x="11" y="15" width="2" height="1" fill="#090d12"/>
+                                <rect x="15" y="15" width="1" height="2" fill="#090d12"/>
+                                <rect x="18" y="15" width="3" height="1" fill="#090d12"/>
+                                <rect x="23" y="15" width="2" height="1" fill="#090d12"/>
+
+                                <rect x="4" y="17" width="2" height="1" fill="#090d12"/>
+                                <rect x="10" y="17" width="3" height="1" fill="#090d12"/>
+                                <rect x="20" y="17" width="1" height="2" fill="#090d12"/>
+                                <rect x="24" y="17" width="3" height="1" fill="#090d12"/>
+
+                                <rect x="11" y="20" width="2" height="2" fill="#090d12"/>
+                                <rect x="15" y="20" width="1" height="1" fill="#090d12"/>
+                                <rect x="18" y="20" width="3" height="1" fill="#090d12"/>
+                                <rect x="23" y="20" width="2" height="2" fill="#090d12"/>
+
+                                <rect x="10" y="23" width="1" height="2" fill="#090d12"/>
+                                <rect x="13" y="23" width="3" height="1" fill="#090d12"/>
+                                <rect x="18" y="23" width="2" height="1" fill="#090d12"/>
+                                <rect x="22" y="23" width="1" height="2" fill="#090d12"/>
+
+                                <rect x="11" y="26" width="3" height="1" fill="#090d12"/>
+                                <rect x="16" y="26" width="2" height="1" fill="#090d12"/>
+                                <rect x="20" y="26" width="3" height="1" fill="#090d12"/>
+                                <rect x="25" y="26" width="1" height="1" fill="#090d12"/>
+                            </svg>
+                        </div>
+                        <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.6rem;">
+                            Abrí en tu celular o compartí el proyecto
+                        </p>
+                        <button class="btn-gaming-outline" id="copyRepoLinkBtn" style="font-size: 0.68rem; padding: 0.4rem 0.8rem; width: 100%;">
+                            COPIAR LINK GITHUB
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <p class="footer-copyright">© 2026 Évora Dynamic. E.E.S.T N°3 "Víctor Mercante" - Hurlingham.</p>
+                </div>
             </div>
         </div>
     </footer>
 
     <!-- ============================================
-         JAVASCRIPT
+         MODAL DE DESCARGA
          ============================================ -->
-    <script>
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+    <div class="modal-overlay" id="downloadModal" aria-hidden="true" role="dialog">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="closeModal" aria-label="Cerrar modal">&times;</button>
+            <div class="modal-icon-badge">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </div>
+            <h3 class="modal-title">BE ON BEAT</h3>
+            <p class="modal-desc">
+                ¡Gracias por tu interés en nuestro proyecto! La versión demo jugable para Windows y Android estará disponible para probar y descargar durante la <strong>Expo-Tec 2026</strong>.
+            </p>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-gaming-solid" id="modalOkBtn" style="padding: 0.6rem 1.5rem;">¡ENTENDIDO!</button>
+                <a href="https://github.com/evoradynamic26" target="_blank" class="btn-gaming-outline" style="padding: 0.6rem 1.25rem;">VER GITHUB</a>
+            </div>
+        </div>
+    </div>
 
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu on link click
-        document.querySelectorAll('.mobile-menu-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-            });
-        });
-
-        // Active nav link on scroll
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').slice(1) === current) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-
-        // Button click handlers
-        document.querySelectorAll('.btn-gaming, .btn-gaming-solid, .read-more-link, .social-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                if (!this.href && this.tagName === 'BUTTON') {
-                    e.preventDefault();
-                    alert('Funcionalidad próximamente disponible');
-                }
-            });
-        });
-    </script>
+    <!-- Vinculación del script principal -->
+    <script src="script.js"></script>
 </body>
 </html>
