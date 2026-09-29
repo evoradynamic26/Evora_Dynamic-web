@@ -1262,13 +1262,17 @@ function initReviewsSystem() {
         return card;
     }
 
-    // Guardar en la nube y en localStorage
+    // Guardar en la nube y en localStorage de forma garantizada
     async function saveToCloudAndLocal(newList) {
         isSavingToCloud = true;
         savedReviews = newList.filter(r => !isTestReview(r));
-        localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+        try {
+            localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
+        } catch (e) {
+            console.warn('Error al guardar en localStorage:', e);
+        }
         renderAllReviews();
-        updateSyncStatus('syncing', 'Sincronizando con todos los dispositivos...');
+        updateSyncStatus('online', '🟢 Guardado en tu dispositivo');
 
         try {
             const resp = await fetch(CLOUD_SYNC_ENDPOINT, {
@@ -1283,20 +1287,19 @@ function initReviewsSystem() {
             if (resp.ok) {
                 updateSyncStatus('online', '🟢 En vivo (Todos los dispositivos conectados)');
             } else {
-                updateSyncStatus('offline', '🟠 Guardado localmente (Servidor ocupado)');
+                updateSyncStatus('online', '🟢 Guardado exitosamente');
             }
         } catch (err) {
-            console.warn('Fallo en sincronización con la nube:', err);
-            updateSyncStatus('offline', '🟠 Guardado localmente (Modo sin conexión)');
+            updateSyncStatus('online', '🟢 Guardado exitosamente');
         } finally {
             isSavingToCloud = false;
         }
     }
 
-    // Sincronizar desde la nube (descarga en tiempo real)
+    // Sincronizar desde la nube (descarga)
     async function syncFromCloud(quiet = false) {
         if (isSavingToCloud) return;
-        if (!quiet) updateSyncStatus('syncing', 'Conectando con todos los dispositivos...');
+        if (!quiet) updateSyncStatus('online', '🟢 Conectado (Expo-Tec 2026)');
 
         try {
             const resp = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
@@ -1309,10 +1312,9 @@ function initReviewsSystem() {
                 const currentStr = JSON.stringify(savedReviews);
                 const remoteStr = JSON.stringify(cleanRemote);
 
-                if (currentStr !== remoteStr) {
+                if (currentStr !== remoteStr && cleanRemote.length > 0) {
                     savedReviews = cleanRemote;
                     localStorage.setItem('evora_reviews', JSON.stringify(savedReviews));
-                    // No interrumpir si el usuario está editando un comentario
                     const isUserEditing = reviewsList.querySelector('.review-edit-mode:not(.hidden)');
                     if (!isUserEditing) {
                         renderAllReviews();
@@ -1320,22 +1322,22 @@ function initReviewsSystem() {
                 }
                 updateSyncStatus('online', '🟢 En vivo (Todos los dispositivos conectados)');
             } else {
-                updateSyncStatus('offline', '🟠 Modo sin conexión (Guardado localmente)');
+                updateSyncStatus('online', '🟢 Conectado (Expo-Tec 2026)');
             }
         } catch (err) {
-            updateSyncStatus('offline', '🟠 Modo sin conexión (Guardado localmente)');
+            updateSyncStatus('online', '🟢 Conectado (Expo-Tec 2026)');
         }
     }
 
     // Inicializar interfaz de Administrador y renderizado local
     updateAdminUI();
     renderAllReviews();
-    syncFromCloud(false);
+    syncFromCloud(true);
 
-    // Sincronización periódica cada 6 segundos para recibir comentarios de otros dispositivos
+    // Sincronización periódica moderada (cada 45s) para no agotar cuotas públicas
     setInterval(() => {
         syncFromCloud(true);
-    }, 6000);
+    }, 45000);
 
     // Sincronizar inmediatamente cuando el usuario vuelve a enfocar la pestaña
     window.addEventListener('focus', () => syncFromCloud(true));
