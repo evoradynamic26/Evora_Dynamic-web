@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMiniGame();
     initReviewsSystem();
     initDownloadModals();
+    initGuidesSystem();
 });
 
 /* ==========================================================================
@@ -1432,4 +1433,412 @@ function initDownloadModals() {
             });
         });
     }
+}
+
+/* ==========================================================================
+   8. SISTEMA INTERACTIVO DE GUÍAS & ACADEMIA
+   ========================================================================== */
+function initGuidesSystem() {
+    // ----------------------------------------------------
+    // A. Pestañas (Tabs) de las 4 Guías
+    // ----------------------------------------------------
+    const tabButtons = document.querySelectorAll('.guide-tab-btn');
+    const tabPanes = document.querySelectorAll('.guide-tab-pane');
+
+    function switchGuideTab(targetId) {
+        tabButtons.forEach(btn => {
+            const isTarget = btn.getAttribute('data-guide-target') === targetId;
+            btn.classList.toggle('active', isTarget);
+            btn.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+        });
+
+        tabPanes.forEach(pane => {
+            const isTarget = pane.getAttribute('id') === targetId;
+            pane.classList.toggle('active', isTarget);
+        });
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-guide-target');
+            if (targetId) {
+                switchGuideTab(targetId);
+            }
+        });
+    });
+
+    // Enlaces de navegación rápida dentro de guías
+    document.querySelectorAll('.quick-jump-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                // Si el link pertenece a una guía específica, asegurar que su pestaña esté activa
+                if (href.startsWith('#cyber-')) switchGuideTab('tab-cyber');
+                else if (href.startsWith('#unity-')) switchGuideTab('tab-unity');
+                else if (href.startsWith('#canva-')) switchGuideTab('tab-canva');
+                else if (href.startsWith('#gamma-')) switchGuideTab('tab-gamma');
+
+                const targetEl = document.querySelector(href);
+                if (targetEl) {
+                    e.preventDefault();
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+
+    // ----------------------------------------------------
+    // B. Listas de Comprobación Interactivas (Checklists)
+    // ----------------------------------------------------
+    const checklistsConfig = [
+        {
+            name: 'cyber-sec',
+            counterEl: document.getElementById('cyberSecCompletedCount'),
+            barEl: document.getElementById('cyberSecProgressBar'),
+            resetBtn: document.getElementById('cyberSecResetBtn'),
+            storageKey: 'evora_chk_cyber_sec',
+            total: 8
+        },
+        {
+            name: 'study-plan',
+            counterEl: document.getElementById('studyPlanCompletedCount'),
+            barEl: document.getElementById('studyPlanProgressBar'),
+            resetBtn: document.getElementById('studyPlanResetBtn'),
+            storageKey: 'evora_chk_study_plan',
+            total: 18
+        },
+        {
+            name: 'unity-plan',
+            counterEl: document.getElementById('unityPlanCompletedCount'),
+            barEl: document.getElementById('unityPlanProgressBar'),
+            resetBtn: document.getElementById('unityPlanResetBtn'),
+            storageKey: 'evora_chk_unity_plan',
+            total: 15
+        },
+        {
+            name: 'unity-delivery',
+            counterEl: document.getElementById('unityDeliveryCompletedCount'),
+            barEl: document.getElementById('unityDeliveryProgressBar'),
+            resetBtn: document.getElementById('unityDeliveryResetBtn'),
+            storageKey: 'evora_chk_unity_delivery',
+            total: 12
+        },
+        {
+            name: 'canva-quality',
+            counterEl: document.getElementById('canvaCompletedCount'),
+            barEl: document.getElementById('canvaProgressBar'),
+            resetBtn: document.getElementById('canvaResetBtn'),
+            storageKey: 'evora_chk_canva_quality',
+            total: 11
+        }
+    ];
+
+    checklistsConfig.forEach(cfg => {
+        const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-checklist="${cfg.name}"]`);
+        if (!checkboxes.length) return;
+
+        // Recuperar datos guardados
+        let savedState = {};
+        try {
+            const raw = localStorage.getItem(cfg.storageKey);
+            if (raw) savedState = JSON.parse(raw);
+        } catch (err) {
+            console.error('Error leyendo checklist:', err);
+        }
+
+        function updateChecklistUI() {
+            let checkedCount = 0;
+            const currentState = {};
+
+            checkboxes.forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                const isChecked = cb.checked;
+                currentState[id] = isChecked;
+
+                const parentLabel = cb.closest('.checklist-item');
+                if (parentLabel) {
+                    parentLabel.classList.toggle('checked', isChecked);
+                }
+
+                if (isChecked) checkedCount++;
+            });
+
+            try {
+                localStorage.setItem(cfg.storageKey, JSON.stringify(currentState));
+            } catch (err) {
+                // localStorage opcional
+            }
+
+            if (cfg.counterEl) {
+                cfg.counterEl.textContent = checkedCount;
+            }
+            if (cfg.barEl) {
+                const pct = Math.round((checkedCount / cfg.total) * 100);
+                cfg.barEl.style.width = pct + '%';
+            }
+        }
+
+        // Aplicar estado inicial
+        checkboxes.forEach(cb => {
+            const id = cb.getAttribute('data-id');
+            if (savedState[id]) {
+                cb.checked = true;
+            }
+            cb.addEventListener('change', updateChecklistUI);
+        });
+
+        updateChecklistUI();
+
+        // Botón de reinicio
+        if (cfg.resetBtn) {
+            cfg.resetBtn.addEventListener('click', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                try {
+                    localStorage.removeItem(cfg.storageKey);
+                } catch (err) {}
+                updateChecklistUI();
+            });
+        }
+    });
+
+    // ----------------------------------------------------
+    // C. Mini Examen de Ciberseguridad
+    // ----------------------------------------------------
+    const gradeBtn = document.getElementById('gradeCyberQuizBtn');
+    const resetQuizBtn = document.getElementById('resetCyberQuizBtn');
+    const resultBox = document.getElementById('cyberQuizResult');
+
+    if (gradeBtn && resultBox) {
+        gradeBtn.addEventListener('click', () => {
+            const questionBoxes = document.querySelectorAll('#cyberQuiz .quiz-question-box');
+            let score = 0;
+            const total = questionBoxes.length; // 6
+
+            questionBoxes.forEach(qBox => {
+                const labels = qBox.querySelectorAll('.quiz-option-label');
+                const radios = qBox.querySelectorAll('input[type="radio"]');
+                let answered = false;
+
+                labels.forEach(lbl => {
+                    lbl.classList.remove('correct-answer', 'wrong-answer');
+                    const radio = lbl.querySelector('input[type="radio"]');
+                    const isCorrect = radio && radio.hasAttribute('data-correct');
+
+                    if (isCorrect) {
+                        lbl.classList.add('correct-answer');
+                    }
+
+                    if (radio && radio.checked) {
+                        answered = true;
+                        if (isCorrect) {
+                            score++;
+                        } else {
+                            lbl.classList.add('wrong-answer');
+                        }
+                    }
+                });
+            });
+
+            resultBox.style.display = 'block';
+            if (score === total) {
+                resultBox.className = 'quiz-result-card success';
+                resultBox.innerHTML = `
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🏆 ¡Excelente! ${score} de ${total} correctas</div>
+                    <p style="font-size: 1.05rem; margin-bottom: 0;">¡Puntaje perfecto! Dominás con solidez los tres pilares CIA, tipos de ataques, criptografía y hacking ético para la Expo-Tec 2026.</p>
+                `;
+            } else if (score >= 4) {
+                resultBox.className = 'quiz-result-card success';
+                resultBox.innerHTML = `
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">👏 ¡Muy Buen Trabajo! ${score} de ${total} correctas</div>
+                    <p style="font-size: 1rem; margin-bottom: 0;">Tenés una base conceptual muy sólida. Revisá las opciones destacadas en verde para afianzar los conceptos que te faltaron.</p>
+                `;
+            } else {
+                resultBox.className = 'quiz-result-card warning';
+                resultBox.innerHTML = `
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚 Obtuviste ${score} de ${total} correctas</div>
+                    <p style="font-size: 1rem; margin-bottom: 0;">¡Buen intento! Te sugerimos repasar la sección de la Tríada CIA, la diferencia entre cifrado y hash, y la definición de phishing para afianzar tus conocimientos.</p>
+                `;
+            }
+
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    }
+
+    if (resetQuizBtn && resultBox) {
+        resetQuizBtn.addEventListener('click', () => {
+            const questionBoxes = document.querySelectorAll('#cyberQuiz .quiz-question-box');
+            questionBoxes.forEach(qBox => {
+                const labels = qBox.querySelectorAll('.quiz-option-label');
+                const radios = qBox.querySelectorAll('input[type="radio"]');
+                radios.forEach(r => r.checked = false);
+                labels.forEach(lbl => lbl.classList.remove('correct-answer', 'wrong-answer'));
+            });
+            resultBox.style.display = 'none';
+            resultBox.innerHTML = '';
+        });
+    }
+
+    // ----------------------------------------------------
+    // D. Selector Interactivo de Tutoriales en Canva (Wizard)
+    // ----------------------------------------------------
+    const wizardBtn = document.getElementById('wizardGenerateBtn');
+    const wizardResult = document.getElementById('wizardResultBox');
+
+    if (wizardBtn && wizardResult) {
+        wizardBtn.addEventListener('click', () => {
+            const material = document.getElementById('wizardMaterialSelect').value;
+            const style = document.getElementById('wizardStyleSelect').value;
+            const media = document.getElementById('wizardMediaSelect').value;
+
+            const recommendations = {
+                folleto: {
+                    title: 'Folleto Tríptico Profesional',
+                    dimensions: 'A4 Horizontal (297 × 210 mm) · 3 paneles de 99 mm',
+                    export: 'PDF para impresión (300 DPI con sangrado de 3 mm)',
+                    steps: [
+                        'Elegí una cuadrícula de 3 columnas para cada cara (interior y exterior).',
+                        'Colocá la portada en el panel derecho del frente con el logo de Be On Beat.',
+                        'Dejá al menos 5 mm de margen de seguridad lejos de los pliegues.',
+                        'Distribuí las mecánicas del juego y la ciberseguridad en el cuerpo interior.'
+                    ]
+                },
+                flyer: {
+                    title: 'Flyer Promocional de Alto Impacto',
+                    dimensions: 'A5 (148 × 210 mm) o A4 Vertical',
+                    export: media === 'digital' ? 'PNG (1080 × 1920 px para historias o 1080 × 1080 px)' : 'PDF para impresión',
+                    steps: [
+                        'Usá un título contundente en la parte superior: "¡Descubrí Be On Beat!".',
+                        'Colocá una captura visual protagonista en el tercio central.',
+                        'Agregá una llamada a la acción (CTA) clara: "¡Jugá la demo en el stand!"',
+                        'Incluí el código QR en una esquina despejada con buen margen blanco.'
+                    ]
+                },
+                tarjeta: {
+                    title: 'Tarjeta de Presentación Comercial',
+                    dimensions: '90 × 50 mm (o 85 × 55 mm)',
+                    export: 'PDF para impresión con marcas de corte',
+                    steps: [
+                        'Anverso: Logo de Évora Dynamic con isotipo centrado y elegante.',
+                        'Reverso: Nombre del integrante, rol técnico, correo y GitHub.',
+                        'Utilizá tipografías limpias no menores a 8 pt para asegurar lectura nítida.',
+                        'Mantené al menos 4 mm de margen respecto al borde de guillotina.'
+                    ]
+                },
+                documento: {
+                    title: 'Documento / Manual de Usuario',
+                    dimensions: 'A4 Estándar (210 × 297 mm)',
+                    export: 'PDF Estándar con numeración de páginas',
+                    steps: [
+                        'Diseñá una portada institucional con nombre del colegio (E.E.S.T N°3) y equipo.',
+                        'Establecé títulos jerárquicos: Título 28 pt, Subtítulo 18 pt, Cuerpo 11 pt.',
+                        'Incorporá capturas de pantalla de Unity con leyendas explicativas.',
+                        'Mantené márgenes amplios de 20 mm para facilitar encuadernado.'
+                    ]
+                },
+                iconos: {
+                    title: 'Conjunto de Íconos y Logotipo',
+                    dimensions: '512 × 512 px por símbolo (o Vectorial SVG)',
+                    export: 'PNG con fondo transparente (o SVG si está disponible)',
+                    steps: [
+                        'Diseñá sobre una cuadrícula cuadrada con trazos geométricos consistentes.',
+                        'Usá un grosor de línea uniforme en todo el set (outline).',
+                        'Exportá cada variante en versión clara y oscura.',
+                        'Probá que el ícono sea reconocible incluso a 32 × 32 px en una interfaz.'
+                    ]
+                }
+            };
+
+            const stylesMap = {
+                gamer: {
+                    palette: 'Cian (#00d4ff), Violeta (#7c3aed), Fondo Oscuro (#0d1117)',
+                    fonts: 'Exo 2 (Títulos) + Open Sans (Cuerpo)',
+                    vibe: 'Futurista, tecnológico, neón arcade'
+                },
+                minimalista: {
+                    palette: 'Negro (#090d12), Gris Plata (#e0e0e0), Blanco puro',
+                    fonts: 'Montserrat (Títulos) + Inter (Cuerpo)',
+                    vibe: 'Limpio, elegante, espacioso y sobrio'
+                },
+                colorido: {
+                    palette: 'Azul vibrante, Amarillo enérgico, Verde menta',
+                    fonts: 'Poppins (Títulos) + Roboto (Cuerpo)',
+                    vibe: 'Juvenil, dinámico y amigable'
+                },
+                formal: {
+                    palette: 'Azul Marino institucional, Dorado sutil, Blanco',
+                    fonts: 'Merriweather (Títulos) + Open Sans (Cuerpo)',
+                    vibe: 'Académico, técnico y riguroso'
+                }
+            };
+
+            const rec = recommendations[material] || recommendations.flyer;
+            const st = stylesMap[style] || stylesMap.gamer;
+
+            wizardResult.style.display = 'block';
+            wizardResult.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(0,212,255,0.2); padding-bottom: 0.75rem;">
+                    <h4 style="font-family: 'Exo 2', sans-serif; font-size: 1.25rem; color: var(--cyan-primary); margin: 0;">
+                        📋 Plan Recomendado: ${rec.title}
+                    </h4>
+                    <span class="guide-badge" style="background: rgba(0,212,255,0.15); color: var(--cyan-primary); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;">
+                        ${media.toUpperCase()}
+                    </span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; font-size: 0.9rem;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: 8px;">
+                        <strong style="color: var(--text-white); display: block; margin-bottom: 0.2rem;">📐 Dimensiones Óptimas:</strong>
+                        <span style="color: var(--text-light);">${rec.dimensions}</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: 8px;">
+                        <strong style="color: var(--text-white); display: block; margin-bottom: 0.2rem;">🎨 Paleta & Estilo:</strong>
+                        <span style="color: var(--text-light);">${st.palette}</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: 8px;">
+                        <strong style="color: var(--text-white); display: block; margin-bottom: 0.2rem;">🔤 Tipografías Sugeridas:</strong>
+                        <span style="color: var(--text-light);">${st.fonts}</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.85rem; border-radius: 8px;">
+                        <strong style="color: var(--text-white); display: block; margin-bottom: 0.2rem;">💾 Exportación:</strong>
+                        <span style="color: var(--text-light);">${rec.export}</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0,212,255,0.06); border-left: 3px solid var(--cyan-primary); padding: 0.9rem 1.15rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem;">
+                    <strong style="color: var(--text-white);">Pasos clave de ejecución en Canva:</strong>
+                    <ol style="margin: 0.5rem 0 0 1.25rem; font-size: 0.88rem; line-height: 1.7; color: var(--text-light);">
+                        ${rec.steps.map(s => `<li>${s}</li>`).join('')}
+                    </ol>
+                </div>
+            `;
+
+            wizardResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    }
+
+    // ----------------------------------------------------
+    // E. Botones para Copiar Código
+    // ----------------------------------------------------
+    document.querySelectorAll('.code-copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const blockWrap = btn.closest('.code-block-wrap');
+            if (!blockWrap) return;
+            const codeEl = blockWrap.querySelector('code');
+            if (!codeEl) return;
+
+            navigator.clipboard.writeText(codeEl.textContent).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '¡Copiado!';
+                btn.style.background = 'var(--cyan-primary)';
+                btn.style.color = '#050b14';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        });
+    });
 }
