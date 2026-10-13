@@ -926,7 +926,7 @@ function initReviewsSystem() {
     }
 
     // Clic en los logos de la empresa para abrir acceso a Administrador
-    const companyLogos = document.querySelectorAll('#navCompanyLogo, .logo-icon-img, #companyLogoBlog, img[src*="LOGO EMPRESA"]');
+    const companyLogos = document.querySelectorAll('#navCompanyLogo, .logo-icon-img, #companyLogoBlog, .company-logo-interactive, img[src*="Logo Empresa"], img[src*="LOGO EMPRESA"]');
     companyLogos.forEach(logoEl => {
         logoEl.style.cursor = 'pointer';
         logoEl.addEventListener('click', (e) => {
