@@ -805,10 +805,24 @@ body {
     }
 }
 
-#companyLogoBlog {
+#companyLogoBlog,
+#gameLogoBlog {
     object-fit: contain;
     object-position: center;
+}
+
+#companyLogoBlog {
     background-color: #000000;
+}
+
+#gameLogoBlog {
+    background-color: #0d0d0d;
+    transform: scale(1.15);
+    transition: transform 0.3s ease;
+}
+
+.blog-card:hover #gameLogoBlog {
+    transform: scale(1.2);
 }
 
 .blog-card-content {
