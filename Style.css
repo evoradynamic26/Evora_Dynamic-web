@@ -2018,6 +2018,882 @@ footer a:hover {
 }
 
 /* ============================================
+   CENTRO DE GUÍAS Y FORMACIÓN (ACADEMIA)
+   ============================================ */
+.guides-section {
+    padding: 5rem 0;
+    background: radial-gradient(circle at 50% 10%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                var(--bg-dark);
+    position: relative;
+    border-top: 1px solid rgba(0, 212, 255, 0.12);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+/* Selector Principal de Pestañas (Tabs) */
+.guides-tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 4.2rem;
+    z-index: 30;
+    padding: 0.75rem 1rem;
+    background: rgba(13, 17, 23, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.guide-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(21, 27, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 12px;
+    color: var(--text-light);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    user-select: none;
+}
+
+.guide-tab-btn:hover {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.35);
+    color: var(--text-white);
+    transform: translateY(-2px);
+}
+
+.guide-tab-btn.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.22) 0%, rgba(124, 58, 237, 0.28) 100%);
+    border-color: var(--cyan-primary);
+    color: var(--text-white);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+}
+
+.guide-tab-btn .tab-badge {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    color: var(--cyan-primary);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    font-weight: 700;
+}
+
+.guide-tab-btn.active .tab-badge {
+    background: var(--cyan-primary);
+    color: #050b14;
+    border-color: var(--cyan-primary);
+}
+
+/* Paneles de Contenido */
+.guide-tab-pane {
+    display: none;
+    animation: guideFadeIn 0.35s ease;
+}
+
+.guide-tab-pane.active {
+    display: block;
+}
+
+@keyframes guideFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Banner de Cabecera de cada Guía */
+.guide-hero-banner {
+    background: linear-gradient(135deg, rgba(21, 27, 39, 0.95) 0%, rgba(15, 20, 31, 0.98) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 18px;
+    padding: 2.25rem 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+.guide-hero-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background: radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.guide-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(0, 212, 255, 0.12);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--cyan-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+}
+
+.guide-hero-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--text-white);
+    margin-bottom: 0.85rem;
+    line-height: 1.25;
+}
+
+.guide-hero-desc {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 980px;
+    margin-bottom: 1.5rem;
+}
+
+/* Barra de Acceso Rápido / Navegación Interna */
+.guide-quick-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.quick-nav-label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.quick-jump-link {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.quick-jump-link:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--cyan-primary);
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+/* Tarjetas de Subsecciones */
+.guide-sub-card {
+    background: rgba(21, 27, 39, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.guide-sub-card:hover {
+    border-color: rgba(0, 212, 255, 0.25);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.guide-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.35rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.guide-num-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(124, 58, 237, 0.25) 100%);
+    border: 1px solid var(--cyan-primary);
+    border-radius: 12px;
+    color: var(--cyan-primary);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.2);
+}
+
+.guide-card-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text-white);
+    line-height: 1.3;
+}
+
+.guide-card-title small {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--cyan-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.2rem;
+}
+
+.guide-prose {
+    color: var(--text-light);
+    font-size: 0.98rem;
+    line-height: 1.75;
+}
+
+.guide-prose p {
+    margin-bottom: 1rem;
+}
+
+.guide-prose p:last-child {
+    margin-bottom: 0;
+}
+
+.guide-prose strong {
+    color: var(--text-white);
+}
+
+/* Grillas Especiales: Tríada CIA & Amenazas */
+.cia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.cia-card {
+    background: rgba(13, 17, 23, 0.85);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.cia-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cyan-primary);
+    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.15);
+}
+
+.cia-card.conf { border-top: 3px solid #00d4ff; }
+.cia-card.inte { border-top: 3px solid #10b981; }
+.cia-card.disp { border-top: 3px solid #f59e0b; }
+
+.cia-card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.cia-card-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+}
+
+.cia-example-box {
+    margin-top: 0.85rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 2px solid var(--cyan-primary);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* Cajas de Alertas y Notas Destacadas */
+.guide-alert-box {
+    display: flex;
+    gap: 1rem;
+    padding: 1.15rem 1.35rem;
+    border-radius: 12px;
+    margin: 1.25rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.guide-alert-box.info {
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    color: #c7f2ff;
+}
+
+.guide-alert-box.warning {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fef3c7;
+}
+
+.guide-alert-box.success {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #d1fae5;
+}
+
+.guide-alert-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Tablas Modernas Adaptables */
+.guide-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(13, 17, 23, 0.6);
+}
+
+.guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+    min-width: 580px;
+}
+
+.guide-table th {
+    background: rgba(21, 27, 39, 0.95);
+    color: var(--cyan-primary);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    padding: 0.9rem 1.15rem;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+    letter-spacing: 0.04em;
+}
+
+.guide-table td {
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    vertical-align: top;
+}
+
+.guide-table tr:hover td {
+    background: rgba(0, 212, 255, 0.04);
+}
+
+.guide-table code {
+    background: rgba(0, 212, 255, 0.12);
+    color: var(--cyan-primary);
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.88rem;
+}
+
+/* Bloques de Código con Botón de Copiado */
+.code-block-wrap {
+    background: #080b10;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    margin: 1.35rem 0;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: rgba(21, 27, 39, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.code-lang-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--cyan-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.code-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-light);
+    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.code-copy-btn:hover {
+    background: var(--cyan-primary);
+    color: #050b14;
+    border-color: var(--cyan-primary);
+}
+
+.code-block-pre {
+    margin: 0;
+    padding: 1.15rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #e6edf3;
+    background: transparent;
+}
+
+/* Listas de Comprobación Interactivas (Checklists) */
+.checklist-card {
+    background: linear-gradient(135deg, rgba(21, 27, 39, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin: 1.75rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.checklist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.checklist-title-group h4 {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.25rem;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checklist-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--cyan-primary);
+    color: var(--cyan-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.checklist-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.35rem;
+}
+
+.checklist-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--cyan-primary) 0%, #10b981 100%);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+}
+
+.checklist-items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.checklist-item:hover {
+    background: rgba(0, 212, 255, 0.05);
+    border-color: rgba(0, 212, 255, 0.25);
+}
+
+.checklist-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 212, 255, 0.5);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+}
+
+.checklist-item input[type="checkbox"]:checked {
+    background: var(--cyan-primary);
+    border-color: var(--cyan-primary);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.checklist-item input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #050b14;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.checklist-item.checked {
+    opacity: 0.65;
+    background: rgba(16, 185, 129, 0.04);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.checklist-item.checked .checklist-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.checklist-text {
+    font-size: 0.92rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+.checklist-reset-btn {
+    margin-top: 1.25rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.checklist-reset-btn:hover {
+    color: var(--text-white);
+    border-color: var(--cyan-primary);
+    background: rgba(0, 212, 255, 0.08);
+}
+
+/* Examen Interactivo de Ciberseguridad */
+.quiz-container {
+    background: linear-gradient(135deg, rgba(21, 27, 39, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
+    border: 1px solid rgba(124, 58, 237, 0.35);
+    border-radius: 18px;
+    padding: 2.25rem;
+    margin: 2rem 0;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.quiz-header h3 {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.45rem;
+    color: var(--text-white);
+}
+
+.quiz-badge {
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid var(--violet-accent);
+    color: #c4b5fd;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.quiz-question-box {
+    background: rgba(13, 17, 23, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 1.4rem;
+    margin-bottom: 1.35rem;
+    transition: border-color 0.25s ease;
+}
+
+.quiz-q-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quiz-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.quiz-option-label {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    color: var(--text-light);
+    transition: all 0.2s ease;
+}
+
+.quiz-option-label:hover {
+    background: rgba(0, 212, 255, 0.06);
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+.quiz-option-label input[type="radio"] {
+    accent-color: var(--cyan-primary);
+    width: 17px;
+    height: 17px;
+}
+
+.quiz-option-label.correct-answer {
+    background: rgba(16, 185, 129, 0.15) !important;
+    border-color: #10b981 !important;
+    color: #6ee7b7 !important;
+    font-weight: 600;
+}
+
+.quiz-option-label.wrong-answer {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: #ef4444 !important;
+    color: #fca5a5 !important;
+}
+
+.quiz-result-card {
+    display: none;
+    padding: 1.5rem;
+    border-radius: 14px;
+    margin-top: 1.5rem;
+    text-align: center;
+    animation: guideFadeIn 0.3s ease;
+}
+
+.quiz-result-card.success {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid #10b981;
+    color: #a7f3d0;
+}
+
+.quiz-result-card.warning {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid #f59e0b;
+    color: #fde68a;
+}
+
+/* Selector Interactivo de Tutoriales en Canva */
+.canva-wizard-box {
+    background: rgba(13, 17, 23, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 16px;
+    padding: 1.85rem;
+    margin: 1.85rem 0;
+}
+
+.wizard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.35rem;
+    margin-bottom: 1.5rem;
+}
+
+.wizard-field-group label {
+    display: block;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cyan-primary);
+    margin-bottom: 0.5rem;
+}
+
+.wizard-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(21, 27, 39, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: var(--text-white);
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.wizard-select:focus {
+    border-color: var(--cyan-primary);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.wizard-result-card {
+    display: none;
+    background: linear-gradient(135deg, rgba(21, 27, 39, 0.95) 0%, rgba(15, 20, 31, 0.98) 100%);
+    border: 1px solid var(--cyan-primary);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    animation: guideFadeIn 0.35s ease;
+}
+
+/* Tarjetas Visuales de Gamma */
+.gamma-cards-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.gamma-card-item {
+    background: rgba(13, 17, 23, 0.85);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.gamma-card-item:hover {
+    transform: translateY(-4px);
+    border-color: var(--violet-accent);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2);
+}
+
+.gamma-card-tag {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    color: var(--violet-accent);
+    margin-bottom: 0.5rem;
+}
+
+.gamma-card-h {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+}
+
+.gamma-card-p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Responsive Guides */
+@media (max-width: 768px) {
+    .guides-tabs-container {
+        top: 3.8rem;
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+    
+    .guide-tab-btn {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.82rem;
+    }
+
+    .guide-hero-banner {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .guide-hero-title {
+        font-size: 1.6rem;
+    }
+
+    .guide-sub-card {
+        padding: 1.35rem 1rem;
+    }
+
+    .guide-card-header {
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+}
+
+/* ============================================
    UTILITIES
    ============================================ */
 .hidden {
