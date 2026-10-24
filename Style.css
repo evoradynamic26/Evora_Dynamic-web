@@ -805,6 +805,12 @@ body {
     }
 }
 
+#companyLogoBlog {
+    object-fit: contain;
+    object-position: center;
+    background-color: #000000;
+}
+
 .blog-card-content {
     padding: 1.25rem;
 }
