@@ -773,8 +773,7 @@
                                 <li><strong>Switch:</strong> Conecta múltiples dispositivos dentro de una misma red
                                     local (LAN).</li>
                                 <li><strong>DNS:</strong> Sistema que traduce nombres de dominio legibles (ej.
-                                    <code>example.com</code>) a direcciones IP numéricas.
-                                </li>
+                                    <code>example.com</code>) a direcciones IP numéricas.</li>
                                 <li><strong>DHCP:</strong> Protocolo que asigna automáticamente configuraciones de red,
                                     incluidas direcciones IP y puertas de enlace.</li>
                                 <li><strong>Puerto:</strong> Identifica un punto lógico de comunicación específico para
@@ -955,8 +954,7 @@
                             <li>Aplicá el principio de privilegios mínimos y comprobaciones rigurosas de autorización en
                                 el servidor.</li>
                             <li>Protegé las sesiones, activá directivas seguras en cookies (<code>HttpOnly</code>,
-                                <code>Secure</code>, <code>SameSite</code>) y tokens.
-                            </li>
+                                <code>Secure</code>, <code>SameSite</code>) y tokens.</li>
                             <li>Nunca almacenes contraseñas en texto plano; usá algoritmos robustos con salt (bcrypt,
                                 Argon2).</li>
                             <li>Mantené las dependencias actualizadas revisando auditorías periódicas
@@ -1425,8 +1423,7 @@
                                 <p style="font-size: 0.9rem; margin: 0;">Si hay indicios de malware activo o intrusión,
                                     <strong>desconectá el equipo de la red Wi-Fi y cableada</strong> de inmediato. No
                                     borres archivos ni reinstales todo a ciegas si el incidente puede necesitar
-                                    investigación forense.
-                                </p>
+                                    investigación forense.</p>
                             </div>
                             <div
                                 style="background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 1.25rem;">
@@ -2168,16 +2165,13 @@
                                 Cómo importar una imagen correctamente:</h5>
                             <ol style="margin-left: 1.5rem; line-height: 1.8;">
                                 <li>Arrastrá el archivo de imagen (.png) desde tu computadora a la carpeta
-                                    <code>Assets/Sprites</code>.
-                                </li>
+                                    <code>Assets/Sprites</code>.</li>
                                 <li>Seleccioná el archivo importado en el Project.</li>
                                 <li>En el Inspector, configurá <strong>Texture Type</strong> como
-                                    <code>Sprite (2D and UI)</code>.
-                                </li>
+                                    <code>Sprite (2D and UI)</code>.</li>
                                 <li>Si tu arte es <strong>Pixel Art</strong>, cambiá <strong>Filter Mode</strong> a
                                     <code>Point (no filter)</code> y <strong>Compression</strong> a <code>None</code>
-                                    para conservar bordes hiper nítidos.
-                                </li>
+                                    para conservar bordes hiper nítidos.</li>
                                 <li>Ajustá <strong>Pixels Per Unit (PPU)</strong> según el tamaño nativo de tus fichas
                                     (ej. 16 o 32 PPU).</li>
                                 <li>Hacé clic en <strong>Apply</strong> en la parte inferior del Inspector.</li>
@@ -2246,8 +2240,7 @@ void OnTriggerEnter2D(Collider2D other)
                                 <strong>Layers vs Tags:</strong>
                                 <ul style="margin: 0.3rem 0 0 1.25rem;">
                                     <li><strong>Tag:</strong> Etiqueta para identificar objetos por categoría (ej.
-                                        <code>Player</code>, <code>Obstacle</code>, <code>Finish</code>).
-                                    </li>
+                                        <code>Player</code>, <code>Obstacle</code>, <code>Finish</code>).</li>
                                     <li><strong>Layer:</strong> Capa utilizada para filtrar qué objetos pueden
                                         colisionar entre sí mediante la matriz de colisiones en <em>Project Settings >
                                             Physics 2D</em>.</li>
@@ -2296,8 +2289,7 @@ public string playerName = "BeOnBeatPlayer"; // Cadenas de texto</code></pre>
                             <li><code>Update():</code> Se ejecuta una vez por cada frame dibujado. Ideal para leer
                                 entradas del teclado (Input).</li>
                             <li><code>FixedUpdate():</code> Se ejecuta en intervalos de tiempo fijos.
-                                <strong>Obligatorio para manipular físicas en Rigidbody2D</strong>.
-                            </li>
+                                <strong>Obligatorio para manipular físicas en Rigidbody2D</strong>.</li>
                         </ul>
 
                         <div class="guide-alert-box warning">
@@ -2512,8 +2504,7 @@ public class PlayerJump : MonoBehaviour
                             <ol style="margin-left: 1.5rem; line-height: 1.8;">
                                 <li>Configurá el GameObject completo en la escena.</li>
                                 <li>Arrastralo desde la <strong>Hierarchy</strong> hasta la carpeta
-                                    <code>Assets/Prefabs</code> en el Project.
-                                </li>
+                                    <code>Assets/Prefabs</code> en el Project.</li>
                                 <li>El icono se volverá azul, confirmando que es un Prefab.</li>
                                 <li>Para clonarlo, arrastralo desde la carpeta Project hacia cualquier parte del nivel.
                                 </li>
@@ -2908,8 +2899,7 @@ public class SettingsExample : MonoBehaviour
                                     <tr>
                                         <td>Un sonido no se escucha</td>
                                         <td>Verificar volumen de Audio Source, clip asignado y que la cámara tenga su
-                                            <code>Audio Listener</code>.
-                                        </td>
+                                            <code>Audio Listener</code>.</td>
                                     </tr>
                                     <tr>
                                         <td>La escena no carga al cambiar de nivel</td>
@@ -2946,11 +2936,9 @@ public class SettingsExample : MonoBehaviour
                                 </li>
                                 <li>Utilizar un archivo <code>.gitignore</code> oficial para Unity (ignorar carpetas
                                     generadas: <code>Library/</code>, <code>Temp/</code>, <code>Obj/</code>,
-                                    <code>Builds/</code>).
-                                </li>
+                                    <code>Builds/</code>).</li>
                                 <li><strong>Subir únicamente:</strong> <code>Assets/</code>, <code>Packages/</code> y
-                                    <code>ProjectSettings/</code>.
-                                </li>
+                                    <code>ProjectSettings/</code>.</li>
                                 <li>Coordinar quién edita cada escena para evitar conflictos complejos de fusión (merge
                                     conflicts).</li>
                             </ul>
@@ -2976,8 +2964,7 @@ public class SettingsExample : MonoBehaviour
                             <li>Seleccioná la plataforma <strong>Windows</strong>.</li>
                             <li>Añadí todas las escenas en orden (el menú principal debe ser el índice 0).</li>
                             <li>Hacé clic en <strong>Build</strong> y elegí una carpeta vacía de destino (ej.
-                                <code>Build_Windows</code>).
-                            </li>
+                                <code>Build_Windows</code>).</li>
                             <li><strong>Importante:</strong> Compartí la carpeta completa compilada con todos sus
                                 archivos y carpetas <code>_Data</code>, no únicamente el archivo <code>.exe</code>
                                 aislado.</li>
@@ -3434,15 +3421,13 @@ public class SettingsExample : MonoBehaviour
                         <p>Un flyer o volante busca atrapar la mirada en menos de 3 segundos:</p>
                         <ol style="margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
                             <li><strong>1. Título impactante:</strong> Captura la atención de inmediato (ej.
-                                <em>"¡Descubrí Be On Beat!"</em>).
-                            </li>
+                                <em>"¡Descubrí Be On Beat!"</em>).</li>
                             <li><strong>2. Imagen principal:</strong> Un render protagonista de alta resolución del
                                 videojuego.</li>
                             <li><strong>3. Información esencial:</strong> Qué ofrece y por qué debería interesarle al
                                 público.</li>
                             <li><strong>4. Llamada a la acción (CTA):</strong> Decile al lector qué hacer (ej.
-                                <em>"¡Probalo en nuestro stand!", "Escaneá el QR"</em>).
-                            </li>
+                                <em>"¡Probalo en nuestro stand!", "Escaneá el QR"</em>).</li>
                             <li><strong>5. Contacto e identificación:</strong> Logo de Évora Dynamic y redes oficiales.
                             </li>
                         </ol>
@@ -3565,8 +3550,7 @@ public class SettingsExample : MonoBehaviour
                         </p>
                         <ul style="margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
                             <li><strong>Títulos:</strong> Fuente display o geométrica tecnológica (como <em>Exo 2</em> u
-                                <em>Orbitron</em>).
-                            </li>
+                                <em>Orbitron</em>).</li>
                             <li><strong>Párrafos:</strong> Fuente sans-serif de máxima legibilidad (como <em>Open
                                     Sans</em> o <em>Inter</em>).</li>
                             <li>Nunca mezcles más de 2 o 3 familias tipográficas en un mismo diseño.</li>
@@ -4219,8 +4203,7 @@ public class SettingsExample : MonoBehaviour
             <div class="blog-grid">
                 <div class="blog-card">
                     <div class="blog-card-image-wrap">
-                        <img src="Logo - Be On Beat.png" alt="Logo de Be On Beat"
-                            class="blog-card-image logo-beonbeat-zoom">
+                        <img src="Logo - Be On Beat.png" alt="Logo de Be On Beat" class="blog-card-image logo-beonbeat-zoom">
                     </div>
                     <div class="blog-card-content">
                         <div class="post-tags" style="margin-bottom: 0.75rem;">
