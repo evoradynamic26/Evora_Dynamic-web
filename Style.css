@@ -824,7 +824,7 @@ body {
 }
 
 .blog-card:hover .logo-beonbeat-zoom {
-    transform: translateX(3.8%) scale(1.45); /* Efecto interactivo al pasar el cursor */
+    transform: translateX(3.8%) scale(1.55); /* Efecto interactivo al pasar el cursor */
 }
 
 @media (min-width: 480px) {
