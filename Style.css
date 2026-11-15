@@ -817,14 +817,14 @@ body {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    /* Reducido a 1.38 y con translateX(3.8%) para compensar el margen del PNG y que quede perfectamente centrado */
-    transform: translateX(3.8%) scale(1.38);
+    /* Ajustado a 1.25 con translateX(3.8%) para centrar y dar mayor margen */
+    transform: translateX(3.8%) scale(1.25);
     transform-origin: center center;
     transition: transform 0.35s ease;
 }
 
 .blog-card:hover .logo-beonbeat-zoom {
-    transform: translateX(3.8%) scale(1.55); /* Efecto interactivo al pasar el cursor */
+    transform: translateX(3.8%) scale(1.40); /* Efecto interactivo al pasar el cursor */
 }
 
 @media (min-width: 480px) {
