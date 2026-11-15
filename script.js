@@ -71,12 +71,11 @@ function initNavigation() {
 }
 
 /* ==========================================================================
-   2. MOTOR DE SONIDO PROCEDURAL (Web Audio API - 100% Offline)
+   2. REPRODUCTOR DE MÚSICA DE FONDO & EFECTOS DE SONIDO (SFX)
    ========================================================================== */
 let audioCtx = null;
 let isAudioPlaying = false;
-let beatInterval = null;
-let currentStep = 0;
+let bgMusicAudio = null;
 
 function getAudioContext() {
     if (!audioCtx) {
@@ -87,120 +86,6 @@ function getAudioContext() {
         audioCtx.resume();
     }
     return audioCtx;
-}
-
-// Generador de Bombo (Kick)
-function playKick(time) {
-    const ctx = getAudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.frequency.setValueAtTime(140, time);
-    osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.35);
-
-    gain.gain.setValueAtTime(0.7, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(time);
-    osc.stop(time + 0.35);
-}
-
-// Generador de Hi-Hat (Ruido blanco con filtro pasa-altos)
-function playHiHat(time, open = false) {
-    const ctx = getAudioContext();
-    const bufferSize = ctx.sampleRate * (open ? 0.15 : 0.04);
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-    }
-
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'highpass';
-    filter.frequency.value = 7500;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(open ? 0.25 : 0.15, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + (open ? 0.15 : 0.04));
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-
-    noise.start(time);
-    noise.stop(time + (open ? 0.15 : 0.04));
-}
-
-// Generador de Snare / Caja rítmica
-function playSnare(time) {
-    const ctx = getAudioContext();
-    // Tonal part
-    const osc = ctx.createOscillator();
-    const oscGain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(180, time);
-    osc.frequency.exponentialRampToValueAtTime(40, time + 0.15);
-    oscGain.gain.setValueAtTime(0.4, time);
-    oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
-    osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
-    osc.start(time);
-    osc.stop(time + 0.15);
-
-    // Noise part
-    const bufferSize = ctx.sampleRate * 0.18;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-    }
-    const noise = ctx.createBufferSource();
-    noise.buffer = buffer;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'highpass';
-    filter.frequency.value = 1000;
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.3, time);
-    noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noise.start(time);
-    noise.stop(time + 0.18);
-}
-
-// Sintetizador de Bajo Cyberpunk / Chiptune
-const bassNotes = [110, 110, 130.81, 146.83, 110, 110, 164.81, 146.83]; // A minor
-function playBass(time, step) {
-    const ctx = getAudioContext();
-    const freq = bassNotes[step % bassNotes.length];
-
-    const osc = ctx.createOscillator();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(freq, time);
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1200, time);
-    filter.frequency.exponentialRampToValueAtTime(250, time + 0.2);
-
-    gain.gain.setValueAtTime(0.2, time);
-    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(time);
-    osc.stop(time + 0.22);
 }
 
 // Efectos de sonido para UI y Minijuego
@@ -255,73 +140,73 @@ window.playSfxCrash = function() {
     } catch (e) {}
 };
 
-function initAudioEngine() {
+function getBgMusic() {
+    if (!bgMusicAudio) {
+        bgMusicAudio = document.getElementById('bgMusic');
+        if (!bgMusicAudio) {
+            bgMusicAudio = new Audio('bg-music.mp3');
+            bgMusicAudio.id = 'bgMusic';
+            document.body.appendChild(bgMusicAudio);
+        }
+        bgMusicAudio.loop = true;
+        // Volumen muy de fondo (8%) para que sea sumamente sutil y no invasivo
+        bgMusicAudio.volume = 0.08;
+    }
+    return bgMusicAudio;
+}
+
+function updateAudioUI(isPlaying) {
     const audioToggleBtn = document.getElementById('audioToggleBtn');
     const audioStatusText = document.getElementById('audioStatusText');
     const equalizer = document.getElementById('equalizerBars');
     const mobileAudioBtn = document.getElementById('mobileAudioToggleBtn');
     const mobileAudioText = document.getElementById('mobileAudioStatusText');
 
+    if (audioStatusText) audioStatusText.textContent = isPlaying ? 'Música: ON' : 'Música: OFF';
+    if (mobileAudioText) mobileAudioText.textContent = isPlaying ? '🎵 Música: ON' : '🎵 Música: OFF';
+    if (equalizer) {
+        if (isPlaying) equalizer.classList.add('playing');
+        else equalizer.classList.remove('playing');
+    }
+    if (audioToggleBtn) {
+        if (isPlaying) audioToggleBtn.classList.add('active');
+        else audioToggleBtn.classList.remove('active');
+    }
+    if (mobileAudioBtn) {
+        if (isPlaying) mobileAudioBtn.classList.add('active');
+        else mobileAudioBtn.classList.remove('active');
+    }
+}
+
+function initAudioEngine() {
+    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    const mobileAudioBtn = document.getElementById('mobileAudioToggleBtn');
+
     function toggleAudio() {
-        getAudioContext();
+        const music = getBgMusic();
         if (isAudioPlaying) {
-            stopAudioLoop();
-            if (audioStatusText) audioStatusText.textContent = 'Música: OFF';
-            if (mobileAudioText) mobileAudioText.textContent = '🎵 Música Beat: OFF';
-            if (equalizer) equalizer.classList.remove('playing');
-            if (audioToggleBtn) audioToggleBtn.classList.remove('active');
-            if (mobileAudioBtn) mobileAudioBtn.classList.remove('active');
+            music.pause();
+            isAudioPlaying = false;
+            updateAudioUI(false);
         } else {
-            startAudioLoop();
-            if (audioStatusText) audioStatusText.textContent = 'Música: ON';
-            if (mobileAudioText) mobileAudioText.textContent = '🎵 Música Beat: ON';
-            if (equalizer) equalizer.classList.add('playing');
-            if (audioToggleBtn) audioToggleBtn.classList.add('active');
-            if (mobileAudioBtn) mobileAudioBtn.classList.add('active');
+            // Asegurar volumen de fondo muy sutil (8%)
+            music.volume = 0.08;
+            const playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isAudioPlaying = true;
+                    updateAudioUI(true);
+                }).catch(err => {
+                    console.warn('Reproducción de audio bloqueada por el navegador:', err);
+                    isAudioPlaying = false;
+                    updateAudioUI(false);
+                });
+            }
         }
-        isAudioPlaying = !isAudioPlaying;
     }
 
     if (audioToggleBtn) audioToggleBtn.addEventListener('click', toggleAudio);
     if (mobileAudioBtn) mobileAudioBtn.addEventListener('click', toggleAudio);
-}
-
-function startAudioLoop() {
-    const ctx = getAudioContext();
-    const tempo = 124; // BPM energético
-    const stepDuration = 60 / tempo / 2; // Semi-corcheas (16th notes)
-
-    currentStep = 0;
-    let nextNoteTime = ctx.currentTime + 0.05;
-
-    beatInterval = setInterval(() => {
-        while (nextNoteTime < ctx.currentTime + 0.1) {
-            // Kick en los 4 tiempos principales
-            if (currentStep % 4 === 0) {
-                playKick(nextNoteTime);
-            }
-            // Snare en el 2 y 4 (pasos 4 y 12 de 16)
-            if (currentStep % 8 === 4) {
-                playSnare(nextNoteTime);
-            }
-            // Hi-Hat en contratiempos
-            if (currentStep % 2 === 0) {
-                playHiHat(nextNoteTime, currentStep % 4 === 2);
-            }
-            // Línea de bajo continua
-            playBass(nextNoteTime, currentStep);
-
-            nextNoteTime += stepDuration;
-            currentStep = (currentStep + 1) % 16;
-        }
-    }, 25);
-}
-
-function stopAudioLoop() {
-    if (beatInterval) {
-        clearInterval(beatInterval);
-        beatInterval = null;
-    }
 }
 
 /* ==========================================================================

@@ -51,8 +51,9 @@
             </div>
 
             <div class="nav-actions">
-                <!-- Reproductor de Beat Rítmico (Web Audio API) -->
-                <button class="audio-btn" id="audioToggleBtn" title="Activar/Desactivar Música Synth">
+                <!-- Reproductor de Música de Fondo -->
+                <audio id="bgMusic" src="bg-music.mp3" loop preload="auto"></audio>
+                <button class="audio-btn" id="audioToggleBtn" title="Activar/Desactivar Música de Fondo">
                     <span id="audioStatusText">Música: OFF</span>
                     <div class="equalizer-bars" id="equalizerBars">
                         <div class="equalizer-bar"></div>
@@ -84,8 +85,9 @@
                 <a href="#blog" class="mobile-menu-link">Reseñas y Proyecto</a>
                 <a href="#contacts" class="mobile-menu-link">Contactos & QR</a>
                 <button class="audio-btn mobile-audio-toggle" id="mobileAudioToggleBtn"
+                    title="Activar/Desactivar Música de Fondo"
                     style="width: 100%; justify-content: center; margin-top: 0.75rem; padding: 0.65rem 1rem;">
-                    <span id="mobileAudioStatusText">🎵 Música Beat: OFF</span>
+                    <span id="mobileAudioStatusText">🎵 Música: OFF</span>
                 </button>
                 <button class="btn-gaming-solid btn-download-trigger" style="width: 100%; margin-top: 0.5rem;">DESCARGAR
                     JUEGO</button>
